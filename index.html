@@ -105,7 +105,8 @@ label.f small{font-weight:500;color:var(--ink-2)}
 .linkbtn.danger{color:var(--sos)}
 .btn-row{display:flex;gap:8px;margin-top:16px}
 .btn-row .btn{flex:1}
-#addContato,#avisarOutros .btn{margin-top:8px}
+#addContato,#avisarOutros .btn,#shareDM,#shareStory{margin-top:8px}
+#storyHint{margin:8px 2px 0}
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .helpbtn{flex:none;width:44px;height:44px;margin-top:6px;border-radius:50%;border:none;background:var(--soft);color:var(--ink);font:inherit;font-weight:800;font-size:21px;cursor:pointer}
 dialog.help{width:min(520px,calc(100% - 24px));max-height:calc(100% - 48px);margin:auto;border:none;border-radius:22px;padding:20px;background:var(--bg);color:var(--ink);overflow:auto}
@@ -221,6 +222,8 @@ body.hidden-mode #disfarce{display:block}
   <symbol id="chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
   <symbol id="share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></symbol>
   <symbol id="eye" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.6 9.6 0 0 1 12 6c5 0 9 6 9 6a15 15 0 0 1-2.4 3M6.3 7.6C4.2 9.2 3 12 3 12s4 6 9 6c1.6 0 3-.4 4.3-1.1"/></symbol>
+  <symbol id="send" viewBox="0 0 24 24"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></symbol>
+  <symbol id="story" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-dasharray="3 2.4"/><path d="M12 8v8M8 12h8"/></symbol>
   <symbol id="tick" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
 </svg>
 
@@ -338,14 +341,20 @@ body.hidden-mode #disfarce{display:block}
     </ul>
     <button class="btn btn-white" data-share-guide="Nas redes">Mandar este guia pro grupo</button>
   </div></details>
-  <a class="ext" href="https://comitedetecnologia.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Mais ferramentas</b><small>Comitê de Tecnologia: 80 ferramentas digitais para mobilização e trabalho de base</small></span><svg class="i"><use href="#share"/></svg></a>
 
   <p class="h-sec">Para o vira-voto</p>
   <p class="sub">Ferramentas que já existem para preparar a conversa.</p>
   <a class="ext" href="https://todoscomlula.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Como conversar</b><small>Todos com Lula: argumentos por perfil de eleitor e simulador</small></span><svg class="i"><use href="#share"/></svg></a>
   <a class="ext" href="https://dapravirar.vercel.app/numeros" target="_blank" rel="noopener"><span class="txt"><b>Onde estão os votos</b><small>Dá pra Virar: mapa da abstenção e resultado por cidade</small></span><svg class="i"><use href="#share"/></svg></a>
+  <a class="ext" href="https://comitedetecnologia.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Mais ferramentas</b><small>Comitê de Tecnologia: 80 ferramentas digitais para mobilização e trabalho de base</small></span><svg class="i"><use href="#share"/></svg></a>
 
+  <p class="h-sec">Espalhe o kit</p>
+  <p class="sub">Mande para quem faz campanha com você.</p>
   <button class="btn btn-soft" id="shareKit"><svg class="i"><use href="#share"/></svg>Mandar o kit pra alguém</button>
+  <button class="btn btn-soft" id="shareDM"><svg class="i"><use href="#send"/></svg>Mandar no Direct do Instagram</button>
+  <button class="btn btn-soft" id="shareStory"><svg class="i"><use href="#story"/></svg>Postar nos stories</button>
+  <p class="small" id="storyHint">Escolha Instagram (Stories) ou WhatsApp (Meu status). O link do kit fica copiado: no Instagram, cole no adesivo de link.</p>
+  <p class="msg" id="shareMsg" aria-live="polite"></p>
   <p class="foot">Conferido em outubro de 2026, com foco em São Paulo. O kit orienta, mas não substitui emergência nem advogado.</p>
 </section>
 
@@ -690,9 +699,61 @@ body.hidden-mode #disfarce{display:block}
   });
 
   /* compartilhar kit */
-  $('shareKit').onclick = function(){
-    shareText('Vira Seguro: kit de segurança pra quem faz vira-voto. O que fazer antes de sair, na hora do perigo e onde denunciar depois. ' + KIT_URL);
+  var KIT_MSG = 'Vira Seguro: kit de segurança pra quem faz vira-voto. O que fazer antes de sair, na hora do perigo e onde denunciar depois. ' + KIT_URL;
+  $('shareKit').onclick = function(){ shareText(KIT_MSG); };
+  function copiar(t){ try{ if(navigator.clipboard) navigator.clipboard.writeText(t).catch(function(){}); }catch(e){} }
+
+  /* Direct do Instagram: o navegador não abre uma conversa com texto pronto,
+     então usamos o menu de compartilhar do celular (onde o Instagram aparece) e deixamos o texto copiado. */
+  $('shareDM').onclick = function(){
+    copiar(KIT_MSG);
+    if(navigator.share){
+      navigator.share({title:'Vira Seguro', text:KIT_MSG, url:KIT_URL}).then(function(){}, function(e){
+        if(e && e.name !== 'AbortError') say($('shareMsg'), 'Texto copiado. Abra o Direct do Instagram e cole na conversa.');
+      });
+      toast('Escolha o Instagram. O texto também está copiado.');
+    } else {
+      say($('shareMsg'), 'Texto copiado. Abra o Direct do Instagram e cole na conversa.');
+      window.open('https://www.instagram.com/direct/inbox/', '_blank', 'noopener');
+    }
   };
+
+  /* Stories (Instagram ou status do WhatsApp): só dá para postar compartilhando uma imagem */
+  var storyBlob = null;
+  function drawStory(){
+    var cv = document.createElement('canvas'), W = 1080, H = 1920; cv.width = W; cv.height = H;
+    var x = cv.getContext('2d'), F = '"Figtree", Arial, sans-serif';
+    function paint(){
+      x.fillStyle = '#121214'; x.fillRect(0,0,W,H);
+      var cx = W/2, top = 330, h = 380, w = h*0.82, l = cx - w/2, r = cx + w/2;
+      x.fillStyle = '#FFFFFF'; x.beginPath(); x.moveTo(l, top); x.lineTo(r, top);
+      x.bezierCurveTo(r, top + h*0.55, cx + w*0.28, top + h*0.82, cx, top + h);
+      x.bezierCurveTo(cx - w*0.28, top + h*0.82, l, top + h*0.55, l, top); x.closePath(); x.fill();
+      x.textAlign = 'center';
+      x.font = '800 150px ' + F; x.fillText('Vira Seguro', cx, 900);
+      x.fillStyle = '#C8C8D0'; x.font = '500 56px ' + F;
+      x.fillText('Kit de segurança pra quem', cx, 1010); x.fillText('faz vira-voto', cx, 1080);
+      x.fillStyle = '#FFFFFF'; x.font = '700 52px ' + F;
+      ['Antes de sair', 'Na hora do perigo', 'Onde denunciar'].forEach(function(t, i){ x.fillText(t, cx, 1240 + i*80); });
+      x.fillStyle = '#D7132E'; rr(x, 190, 1500, 700, 120, 60); x.fill();
+      x.fillStyle = '#FFFFFF'; x.font = '700 50px ' + F; x.fillText(KIT_URL.replace('https://', ''), cx, 1578);
+      cv.toBlob(function(b){ storyBlob = b; });
+    }
+    (document.fonts && document.fonts.load) ? Promise.all([document.fonts.load('800 150px Figtree'), document.fonts.load('500 56px Figtree'), document.fonts.load('700 52px Figtree')]).then(paint, paint) : paint();
+  }
+  $('shareStory').onclick = function(){
+    var m = $('shareMsg'), f = storyBlob && new File([storyBlob], 'vira-seguro-stories.png', {type:'image/png'});
+    copiar(KIT_URL);
+    if(f && navigator.canShare && navigator.canShare({files:[f]})){
+      navigator.share({files:[f]}).then(function(){}, function(e){ if(e && e.name !== 'AbortError') say(m, 'Não deu para abrir o compartilhamento.', true); });
+      return;
+    }
+    if(!storyBlob) return say(m, 'Preparando a imagem. Tente de novo em um instante.', true);
+    var a = document.createElement('a'); a.href = URL.createObjectURL(storyBlob); a.download = 'vira-seguro-stories.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    say(m, 'Imagem salva. Poste nos stories e cole o link do kit, que está copiado.');
+  };
+  drawStory();
 
   /* depois: casos, relato e destinos */
   var CH = {
