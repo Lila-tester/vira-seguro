@@ -10,7 +10,7 @@ Kit de segurança para celular, feito para quem faz campanha de rua e vira-voto.
 
 O kit é dividido em três momentos, nas abas de baixo:
 
-- **Antes**: cadastre até 3 contatos de confiança, veja como compartilhar a localização em tempo real pelo WhatsApp, faça o checklist da saída (rua, ato ou redes) e gere um cartão de emergência para usar como fundo da tela de bloqueio.
+- **Antes**: cadastre até 3 contatos de confiança, veja como compartilhar a localização em tempo real pelo WhatsApp, combine um ponto de encontro com o grupo (que aparece na aba Durante, mesmo sem internet), faça o checklist da saída (rua, ato ou redes) e gere um cartão de emergência para usar como fundo da tela de bloqueio.
 - **Durante**: em perigo, ligue para o 190 ou mande sua localização para um contato com um toque. O modo disfarce transforma a tela numa lista de compras.
 - **Depois**: escolha o que aconteceu e veja onde denunciar (delegacia, BO online, 180, Disque 100, Polícia Federal, SaferNet, TSE, Defensoria). O kit ajuda a escrever o relato para copiar e enviar.
 

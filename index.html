@@ -193,6 +193,15 @@ details.acc summary small{display:block;font-weight:500;color:var(--ink-2);font-
 .links b{display:block;font-size:16px}
 .links small{display:block;color:var(--ink-2);font-size:14px;line-height:1.35}
 .links .txt{flex:1}
+.enc-card{background:var(--bg);border-radius:14px;padding:14px 16px;margin:4px 0 10px}
+.enc-local{font-size:19px;font-weight:800;line-height:1.3;display:block}
+.enc-meta{display:block;color:var(--ink-2);font-size:15px;margin-top:4px}
+.enc-acts{display:flex;gap:6px;justify-content:flex-end;margin-top:2px}
+#encGeo,#encShare{margin-top:10px}
+.enc-durante{background:var(--soft);border-radius:20px;padding:16px 18px;margin:14px 0}
+.enc-durante .label{margin:0 0 6px}
+.enc-durante .enc-local{font-size:22px}
+.enc-durante .btn{margin-top:12px}
 .links svg.i{width:20px;height:20px;color:var(--ink-2)}
 .h-sec{font-size:22px;font-weight:800;margin:34px 0 4px}
 .secnav{position:sticky;top:0;z-index:5;display:flex;gap:6px;overflow-x:auto;margin:12px -20px 4px;padding:10px 20px;background:var(--bg);scrollbar-width:none}
@@ -242,6 +251,7 @@ body.hidden-mode #disfarce{display:block}
   <symbol id="send" viewBox="0 0 24 24"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></symbol>
   <symbol id="story" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-dasharray="3 2.4"/><path d="M12 8v8M8 12h8"/></symbol>
   <symbol id="out" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></symbol>
+  <symbol id="flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
   <symbol id="tick" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
 </svg>
 
@@ -253,7 +263,7 @@ body.hidden-mode #disfarce{display:block}
     <h1 id="h-antes">Prepare-se antes de sair</h1>
     <button class="helpbtn" id="ajudaBtn" aria-label="Como o kit funciona e como instalar" aria-haspopup="dialog">?</button>
   </div>
-  <p class="sub">Quatro passos. Faça uma vez e revise antes de cada saída.</p>
+  <p class="sub">Cinco passos. Faça uma vez e revise antes de cada saída.</p>
   <nav class="secnav" id="secnav" aria-label="Partes desta página">
     <a href="#sec-passos">Passos</a>
     <a href="#sec-guias">Guias</a>
@@ -302,7 +312,33 @@ body.hidden-mode #disfarce{display:block}
   </div>
 
   <div class="step">
-    <div class="step-head"><span class="num" id="n3">3</span><h2>Checklist</h2></div>
+    <div class="step-head"><span class="num" id="nEnc">3</span><h2>Ponto de encontro</h2></div>
+    <p>Combine com o grupo onde vocês se reencontram se alguém se perder. Fica salvo no celular e aparece na aba Durante, mesmo sem internet.</p>
+    <div id="encForm">
+      <label class="f" for="enc-local">Local</label>
+      <input class="input" id="enc-local" type="text" autocomplete="off" enterkeyhint="done" placeholder="Ex.: na frente do MASP, embaixo do vão">
+      <label class="f" for="enc-hora">Horário de reencontro <small>(opcional)</small></label>
+      <input class="input" id="enc-hora" type="time">
+      <button class="btn btn-white" id="encGeo"><svg class="i"><use href="#pin"/></svg><span id="encGeoTxt">Usar minha localização atual</span></button>
+      <p class="small" id="encGeoInfo" hidden></p>
+      <div class="btn-row">
+        <button class="btn btn-white" id="encCancelar" hidden>Cancelar</button>
+        <button class="btn btn-primary" id="encSalvar">Salvar ponto</button>
+      </div>
+    </div>
+    <div id="encSalvo" hidden>
+      <div class="enc-card">
+        <span class="enc-local" id="encLocalTxt"></span>
+        <span class="enc-meta" id="encMetaTxt"></span>
+        <div class="enc-acts"><button class="linkbtn" id="encEditar">Editar</button><button class="linkbtn danger" id="encApagar">Apagar</button></div>
+      </div>
+      <button class="btn btn-primary" id="encShare"><svg class="i"><use href="#share"/></svg>Mandar pro grupo</button>
+    </div>
+    <p class="msg" id="encMsg" aria-live="polite"></p>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="num" id="n3">4</span><h2>Checklist</h2></div>
     <p>Aonde você vai?</p>
     <div class="seg" role="group" aria-label="Tipo de saída">
       <button aria-pressed="true" data-ctx="rua">Rua</button>
@@ -318,7 +354,7 @@ body.hidden-mode #disfarce{display:block}
   </div>
 
   <div class="step">
-    <div class="step-head"><span class="num">4</span><h2>Cartão de emergência</h2></div>
+    <div class="step-head"><span class="num">5</span><h2>Cartão de emergência</h2></div>
     <p>Uma imagem com telefones úteis para usar como fundo da tela de bloqueio. Funciona mesmo sem internet. A imagem salva tem um espaço livre em cima para o relógio.</p>
     <img class="cardimg" id="cardImg" alt="Cartão com os telefones 190, 180, 100 e seu contato de confiança">
     <button class="btn btn-primary" id="salvarCartao"><svg class="i"><use href="#share"/></svg>Salvar imagem</button>
@@ -396,6 +432,13 @@ body.hidden-mode #disfarce{display:block}
   <button class="btn btn-primary btn-xl" id="avisar"><svg class="i"><use href="#pin"/></svg><span class="ell" id="avisarTxt">Enviar minha localização</span></button>
   <div id="avisarOutros"></div>
   <p class="msg" id="avisarMsg" aria-live="polite"></p>
+
+  <div class="enc-durante" id="encDurante" hidden>
+    <p class="label">Ponto de encontro</p>
+    <span class="enc-local" id="encDLocal"></span>
+    <span class="enc-meta" id="encDMeta"></span>
+    <a class="btn btn-white" id="encRota" href="#" target="_blank" rel="noopener"><svg class="i"><use href="#flag"/></svg>Como chegar</a>
+  </div>
 
   <p class="label">Para encerrar a conversa</p>
   <p class="say">"Tudo bem, respeito sua opinião."</p>
@@ -705,6 +748,70 @@ body.hidden-mode #disfarce{display:block}
   $('cancelarContato').onclick = function(){ editando = null; say($('contatoMsg'), ''); renderContato(); };
   $('addContato').onclick = function(){ abrirForm(-1); };
 
+  /* ponto de encontro */
+  var encGeoTmp = null, encEditando = false;
+  function encontro(){ return store.get('encontro'); }
+  function encMeta(e){
+    var p = [];
+    if(e.hora) p.push('Reencontro às ' + e.hora);
+    if(e.lat != null) p.push('localização salva no mapa');
+    return p.join(' · ');
+  }
+  function renderEncontro(){
+    var e = encontro(), form = !e || encEditando;
+    $('encForm').hidden = !form; $('encSalvo').hidden = form;
+    $('encCancelar').hidden = !e;
+    $('nEnc').classList.toggle('done', !!e); $('nEnc').textContent = e ? '✓' : '3';
+    var g = encGeoTmp;
+    $('encGeoTxt').textContent = g ? 'Atualizar localização' : 'Usar minha localização atual';
+    $('encGeoInfo').hidden = !g; $('encGeoInfo').textContent = g ? 'Localização marcada ✓ (precisão de cerca de ' + Math.max(5, Math.round(g.acc || 0)) + ' m)' : '';
+    $('encDurante').hidden = !e;
+    if(e){
+      $('encLocalTxt').textContent = e.local; $('encMetaTxt').textContent = encMeta(e);
+      $('encDLocal').textContent = e.local; $('encDMeta').textContent = encMeta(e);
+      var dest = e.lat != null ? e.lat + ',' + e.lng : e.local;
+      $('encRota').href = 'https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=' + encodeURIComponent(dest);
+    }
+  }
+  $('encGeo').onclick = function(){
+    var m = $('encMsg');
+    if(!navigator.geolocation) return say(m, 'Este navegador não consegue pegar a localização.', true);
+    say(m, 'Pegando sua localização…');
+    navigator.geolocation.getCurrentPosition(function(p){
+      encGeoTmp = {lat:+p.coords.latitude.toFixed(5), lng:+p.coords.longitude.toFixed(5), acc:p.coords.accuracy};
+      say(m, ''); renderEncontro();
+    }, function(){ say(m, 'Não deu para pegar a localização. Confira se o navegador tem permissão, ou salve só o nome do local.', true); },
+    {enableHighAccuracy:true, timeout:10000, maximumAge:30000});
+  };
+  $('encSalvar').onclick = function(){
+    var local = $('enc-local').value.trim(), m = $('encMsg');
+    if(!local) return say(m, 'Escreva o local, com uma referência fácil de achar.', true);
+    var e = {local:local, hora:$('enc-hora').value || ''};
+    if(encGeoTmp){ e.lat = encGeoTmp.lat; e.lng = encGeoTmp.lng; }
+    store.set('encontro', e); encEditando = false; encGeoTmp = null; say(m, ''); renderEncontro();
+    toast('Ponto de encontro salvo.');
+  };
+  $('enc-local').addEventListener('keydown', function(ev){ if(ev.key === 'Enter'){ ev.preventDefault(); $('encSalvar').click(); } });
+  $('encEditar').onclick = function(){
+    var e = encontro(); if(!e) return;
+    encEditando = true; $('enc-local').value = e.local; $('enc-hora').value = e.hora || '';
+    encGeoTmp = e.lat != null ? {lat:e.lat, lng:e.lng} : null;
+    say($('encMsg'), ''); renderEncontro(); $('enc-local').focus();
+  };
+  $('encCancelar').onclick = function(){ encEditando = false; encGeoTmp = null; say($('encMsg'), ''); renderEncontro(); };
+  $('encApagar').onclick = function(){
+    store.del('encontro'); encEditando = false; encGeoTmp = null;
+    $('enc-local').value = ''; $('enc-hora').value = ''; renderEncontro(); toast('Ponto de encontro apagado.');
+  };
+  $('encShare').onclick = function(){
+    var e = encontro(); if(!e) return;
+    var t = '📍 Ponto de encontro: ' + e.local + '.';
+    t += e.hora ? ' Se a gente se perder, nos vemos lá às ' + e.hora + '.' : ' Se a gente se perder, nos vemos lá.';
+    if(e.lat != null) t += '\nMapa: https://maps.google.com/?q=' + e.lat + ',' + e.lng;
+    t += '\n\nKit de segurança pro ato: ' + KIT_URL;
+    shareText(t);
+  };
+
   /* checklist */
   var lists = {
     'rua-junto':['Vou em dupla e combinamos um ponto de encontro','Compartilhei minha localização em tempo real','Combinamos uma palavra para irmos embora','Vou a um lugar movimentado e de dia'],
@@ -736,7 +843,7 @@ body.hidden-mode #disfarce{display:block}
     var m = $('checkMsg');
     if(n === total){ m.className = 'msg done'; m.textContent = 'Tudo pronto para sair.'; }
     else { m.className = 'msg warn'; m.textContent = (total - n === 1 ? 'Falta 1 item.' : 'Faltam ' + (total - n) + ' itens.') + ' Vale revisar antes de sair.'; }
-    $('n3').classList.toggle('done', n === total); $('n3').textContent = n === total ? '✓' : '3';
+    $('n3').classList.toggle('done', n === total); $('n3').textContent = n === total ? '✓' : '4';
   }
   document.querySelectorAll('#segCom button').forEach(function(b){
     b.onclick = function(){ com = b.dataset.com; store.set('com', com); renderChecklist(); };
@@ -984,7 +1091,7 @@ body.hidden-mode #disfarce{display:block}
   window.addEventListener('appinstalled', instalado);
   $('instalarBtn').onclick = function(){ if(!installEvt) return; installEvt.prompt(); installEvt = null; $('instalarBtn').hidden = true; };
 
-  renderContato(); renderChecklist(); drawCard();
+  renderContato(); renderEncontro(); renderChecklist(); drawCard();
   go(contato() ? 'durante' : 'antes', false);
 })();
 </script>
