@@ -58,6 +58,7 @@
   --ok:#3DD68C; --ok-soft:#0D2A1C; --focus:#7FA4FF;
 }
 *,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.5;-webkit-text-size-adjust:100%}
 main{max-width:520px;margin:0 auto;padding:16px 20px 120px}
@@ -519,10 +520,12 @@ body.hidden-mode #disfarce{display:block}
 <script>
 (function(){
   var KIT_URL = 'https://vira-seguro.vercel.app';
+  // se o navegador bloquear o armazenamento (ex.: modo privado), guarda em memória enquanto a página estiver aberta
+  var mem = {};
   var store = {
-    get:function(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
-    set:function(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
-    del:function(k){ try{ localStorage.removeItem(k); }catch(e){} }
+    get:function(k){ try{ var v = localStorage.getItem(k); if(v !== null) return JSON.parse(v); }catch(e){} return k in mem ? JSON.parse(mem[k]) : null; },
+    set:function(k,v){ mem[k] = JSON.stringify(v); try{ localStorage.setItem(k, mem[k]); }catch(e){} },
+    del:function(k){ delete mem[k]; try{ localStorage.removeItem(k); }catch(e){} }
   };
   function $(id){ return document.getElementById(id); }
   function say(el, t, err){ el.textContent = t; el.classList.toggle('err', !!err); }
@@ -596,7 +599,11 @@ body.hidden-mode #disfarce{display:block}
   $('fecharIntro').onclick = function(){ $('intro').hidden = true; store.set('onboarded', true); };
 
   /* contato */
-  function digits(t){ var d = (t||'').replace(/\D/g,''); if(d.length === 10 || d.length === 11) d = '55' + d; return d; }
+  function digits(t){
+    var d = (t||'').replace(/\D/g,'').replace(/^0+/, '');
+    if(d.length === 10 || d.length === 11) d = '55' + d;
+    return (d.length === 12 || d.length === 13) && d.indexOf('55') === 0 ? d : '';
+  }
   var editando = null, MAXC = 3;
   function abrirForm(i){
     var l = contatos(), c = i >= 0 ? l[i] : null;
@@ -646,6 +653,8 @@ body.hidden-mode #disfarce{display:block}
   }
   var excluirIdx = null, dlgEx = $('confirmaExcluir');
   function fecharDlg(d){ if(d.close) d.close(); else d.removeAttribute('open'); }
+  // toque no fundo escurecido fecha; toque em espaço vazio dentro da janela não
+  function foraDa(d, e){ var r = d.getBoundingClientRect(); return e.target === d && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom); }
   function pedirExclusao(i){
     var x = contatos()[i]; if(!x) return;
     excluirIdx = i;
@@ -654,7 +663,7 @@ body.hidden-mode #disfarce{display:block}
     $('excluirNao').focus();
   }
   $('excluirNao').onclick = function(){ excluirIdx = null; fecharDlg(dlgEx); };
-  dlgEx.addEventListener('click', function(e){ if(e.target === dlgEx){ excluirIdx = null; fecharDlg(dlgEx); } });
+  dlgEx.addEventListener('click', function(e){ if(foraDa(dlgEx, e)){ excluirIdx = null; fecharDlg(dlgEx); } });
   $('excluirSim').onclick = function(){
     var i = excluirIdx; excluirIdx = null; fecharDlg(dlgEx);
     if(i === null) return;
@@ -666,13 +675,22 @@ body.hidden-mode #disfarce{display:block}
     var nome = $('c-nome').value.trim(), tel = $('c-tel').value.trim(), m = $('contatoMsg');
     if(!nome) return say(m, 'Escreva o nome do contato.', true);
     var d = digits(tel);
-    if(d.length < 12 || d.length > 13) return say(m, 'Confira o número: DDD e número, como 11 91234-5678.', true);
+    if(!d) return say(m, 'Confira o número: DDD e número, como 11 91234-5678.', true);
     var l = contatos(), novo = {nome:nome, tel:tel, wa:d};
+    for(var k = 0; k < l.length; k++){ if(k !== editando && l[k].wa === d) return say(m, 'Esse número já está na lista, com o nome ' + l[k].nome + '.', true); }
     if(editando >= 0 && editando < l.length) l[editando] = novo;
     else { if(l.length >= MAXC) return say(m, 'Você já tem ' + MAXC + ' contatos.', true); l.push(novo); }
     var ed = editando >= 0;
     store.set('contatos', l); editando = null; renderContato(); drawCard(); say(m, ''); toast(ed ? 'Contato atualizado.' : 'Contato salvo.');
   };
+  ['c-nome','c-tel'].forEach(function(id){
+    $(id).addEventListener('keydown', function(e){
+      if(e.key !== 'Enter') return;
+      e.preventDefault();
+      if(id === 'c-nome') $('c-tel').focus(); else $('salvarContato').click();
+    });
+  });
+  $('c-nome').setAttribute('enterkeyhint', 'next'); $('c-tel').setAttribute('enterkeyhint', 'done');
   $('cancelarContato').onclick = function(){ editando = null; say($('contatoMsg'), ''); renderContato(); };
   $('addContato').onclick = function(){ abrirForm(-1); };
 
@@ -947,7 +965,7 @@ body.hidden-mode #disfarce{display:block}
   function fecharAjuda(){ if(dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
   $('ajudaBtn').onclick = function(){ if(dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); };
   $('fecharAjuda').onclick = fecharAjuda; $('fecharAjuda2').onclick = fecharAjuda;
-  dlg.addEventListener('click', function(e){ if(e.target === dlg) fecharAjuda(); });
+  dlg.addEventListener('click', function(e){ if(foraDa(dlg, e)) fecharAjuda(); });
   function instalado(){ $('jaInstalado').hidden = false; $('instalarPassos').hidden = true; }
   if((window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone) instalado();
   var installEvt = null;
