@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vira Seguro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF; --soft:#F3F3F5; --soft-2:#E6E6EB; --ink:#121214; --ink-2:#5C5C66; --line:#E4E4E9;
+  --primary:#121214; --on-primary:#FFFFFF;
+  --sos:#D7132E; --on-sos:#FFFFFF; --sos-soft:#FFF0F2;
+  --ok:#0A7D45; --ok-soft:#E6F6EE; --focus:#2F6BFF;
+  --font:"Figtree", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#000000; --soft:#17171A; --soft-2:#2A2A31; --ink:#F5F5F7; --ink-2:#A6A6B2; --line:#2A2A31;
+    --primary:#F5F5F7; --on-primary:#000000;
+    --sos:#FF3B55; --on-sos:#16000A; --sos-soft:#2A0A10;
+    --ok:#3DD68C; --ok-soft:#0D2A1C; --focus:#7FA4FF;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#000000; --soft:#17171A; --soft-2:#2A2A31; --ink:#F5F5F7; --ink-2:#A6A6B2; --line:#2A2A31;
+  --primary:#F5F5F7; --on-primary:#000000;
+  --sos:#FF3B55; --on-sos:#16000A; --sos-soft:#2A0A10;
+  --ok:#3DD68C; --ok-soft:#0D2A1C; --focus:#7FA4FF;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.5;-webkit-text-size-adjust:100%}
+main{max-width:520px;margin:0 auto;padding:16px 20px 120px}
+h1{font-size:30px;line-height:1.12;font-weight:800;letter-spacing:-.02em;margin:8px 0 6px}
+h2{font-size:20px;font-weight:800;margin:0}
+p{margin:0 0 12px}
+.sub{color:var(--ink-2)}
+.small{font-size:15px;color:var(--ink-2)}
+svg.i{width:24px;height:24px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:8px}
+
+.tab{display:none}
+.tab.on{display:block}
+
+.step{background:var(--soft);border-radius:20px;padding:18px;margin:14px 0}
+.step-head{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.num{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--primary);color:var(--on-primary);font-weight:800;font-size:15px;flex:none}
+.num.done{background:var(--ok);color:#fff}
+.step p{color:var(--ink-2);font-size:16px}
+.step ol{margin:6px 0 12px;padding-left:22px;color:var(--ink-2);font-size:16px}
+.step ol li{margin:4px 0}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;border-radius:16px;border:none;font:inherit;font-weight:700;font-size:18px;text-decoration:none;cursor:pointer;padding:12px 18px;margin:10px 0 0}
+.btn-primary{background:var(--primary);color:var(--on-primary)}
+.btn-soft{background:var(--soft);color:var(--ink)}
+.btn-white{background:var(--bg);color:var(--ink)}
+.btn-sos{background:var(--sos);color:var(--on-sos)}
+.btn-xl{min-height:88px;font-size:23px;border-radius:24px;margin-top:14px}
+.btn span.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.input{width:100%;font:inherit;font-size:17px;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:14px 16px;min-height:56px}
+.input:focus{border-color:var(--ink);outline:none}
+textarea.input{min-height:96px;resize:vertical}
+label.f{display:block;font-weight:700;margin:14px 0 6px;font-size:16px}
+label.f small{font-weight:500;color:var(--ink-2)}
+.msg{min-height:22px;font-weight:600;font-size:15px;margin:8px 0 0;color:var(--ok)}
+.msg:empty{display:none}
+.msg.err{color:var(--sos)}
+.saved{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border-radius:14px;padding:12px 14px}
+.saved b{display:block}
+.linkbtn{background:none;border:none;color:var(--ink);font:inherit;font-weight:700;text-decoration:underline;min-height:48px;cursor:pointer;padding:0 6px}
+
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg);border-radius:14px;padding:4px;margin:4px 0 10px}
+.seg button{min-height:46px;border:none;border-radius:11px;background:transparent;color:var(--ink-2);font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
+.check{display:flex;gap:14px;align-items:center;min-height:58px;padding:10px 0;border-bottom:1px solid var(--soft-2);cursor:pointer;font-size:16px}
+.check:last-child{border-bottom:none}
+.check input{position:absolute;opacity:0;width:1px;height:1px}
+.box{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:2px solid var(--ink-2);flex:none;background:var(--bg)}
+.box svg{width:16px;height:16px;stroke:#fff;stroke-width:3;fill:none;opacity:0}
+.check input:checked + .box{background:var(--ok);border-color:var(--ok)}
+.check input:checked + .box svg{opacity:1}
+.check input:focus-visible + .box{outline:3px solid var(--focus);outline-offset:3px}
+.cardimg{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 72%;border-radius:16px;display:block;margin:10px 0 0;background:#121214}
+
+details.acc{background:var(--soft);border-radius:18px;margin:10px 0}
+details.acc summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:64px;padding:12px 18px;font-weight:700;font-size:17px;cursor:pointer}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:"";width:10px;height:10px;border-right:2.5px solid var(--ink-2);border-bottom:2.5px solid var(--ink-2);transform:rotate(45deg);flex:none;margin-right:4px}
+details.acc[open] summary::after{transform:rotate(-135deg)}
+details.acc summary small{display:block;font-weight:500;color:var(--ink-2);font-size:15px}
+.acc-body{padding:0 18px 18px}
+.acc-body ul{margin:0;padding-left:20px}
+.acc-body li{margin:8px 0}
+.ch{background:var(--bg);border-radius:14px;padding:14px;margin:10px 0}
+.ch b{display:block}
+.ch p{color:var(--ink-2);font-size:15px;margin:2px 0 4px}
+.ch .btn{background:var(--soft);color:var(--ink);min-height:50px;font-size:16px;margin-top:8px}
+.ch .btn.btn-sos{background:var(--sos);color:var(--on-sos)}
+
+.say{background:var(--soft);border-radius:16px;padding:14px 16px;margin:8px 0;font-weight:600;font-size:18px}
+.label{font-size:15px;font-weight:700;color:var(--ink-2);margin:26px 0 6px}
+.callout{background:var(--soft);border-radius:16px;padding:14px 16px;margin:16px 0;font-size:16px}
+.output{white-space:pre-wrap;background:var(--bg);border-radius:14px;padding:14px;font-size:15px;margin-top:12px}
+.foot{margin-top:28px;font-size:14px;color:var(--ink-2)}
+
+.tabbar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));z-index:10}
+.tabbar-in{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:520px;margin:0 auto}
+.tabbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;min-height:66px;line-height:1.2;border:none;border-radius:14px;background:transparent;color:var(--ink-2);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.tabbtn[aria-current="page"]{background:var(--soft);color:var(--ink)}
+.tabbtn.sos{color:var(--sos)}
+.tabbtn.sos[aria-current="page"]{background:var(--sos);color:var(--on-sos)}
+
+
+.opt{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:60px;padding:12px 16px;margin:8px 0 0;border-radius:14px;border:2px solid transparent;background:var(--bg);color:var(--ink);font:inherit;font-weight:700;font-size:17px;text-align:left;cursor:pointer}
+.opt small{display:block;font-weight:500;color:var(--ink-2);font-size:14px}
+.opt .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--ink-2);flex:none}
+.opt[aria-pressed="true"]{border-color:var(--ink)}
+.opt[aria-pressed="true"] .dot{border:7px solid var(--ink)}
+.dest{background:var(--bg);border-radius:14px;padding:14px;margin:10px 0 0}
+.dest b{display:block;font-size:17px}
+.dest .why{color:var(--ink-2);font-size:15px;margin:2px 0 0}
+.dest .tip{font-size:14px;color:var(--ink);background:var(--soft);border-radius:10px;padding:8px 10px;margin:10px 0 0}
+.dest .acts{display:flex;gap:8px;flex-wrap:wrap}
+.dest .acts .btn{flex:1 1 140px;min-height:50px;font-size:16px;background:var(--soft);color:var(--ink);margin-top:10px}
+.dest .acts .btn.btn-sos{background:var(--sos);color:var(--on-sos)}
+.tag{display:inline-block;font-size:13px;font-weight:700;background:var(--soft-2);border-radius:8px;padding:2px 8px;margin-bottom:6px}
+.locked{opacity:.55}
+.tabbtn small{font-size:12px;font-weight:600;opacity:.85}
+.intro-row{display:flex;gap:12px;align-items:flex-start;margin:12px 0}
+.intro-row .ib{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--bg);flex:none}
+.intro-row .ib.sos{background:var(--sos);color:var(--on-sos)}
+.msg.warn{color:var(--ink);background:var(--sos-soft);border-radius:12px;padding:10px 12px}
+.msg.done{color:var(--ok);background:var(--ok-soft);border-radius:12px;padding:10px 12px}
+.ext{display:flex;align-items:center;gap:14px;background:var(--soft);border-radius:18px;padding:16px;margin:10px 0;text-decoration:none;color:var(--ink);min-height:72px}
+.ext b{display:block;font-size:17px}
+.ext small{display:block;color:var(--ink-2);font-size:15px}
+.ext .txt{flex:1}
+.h-sec{font-size:22px;font-weight:800;margin:34px 0 4px}
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(10px);bottom:calc(92px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);font-weight:700;font-size:16px;padding:12px 18px;border-radius:14px;z-index:30;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok::before{content:"✓  "}
+.toast.err{background:var(--sos);color:var(--on-sos)}
+.btn.confirming{background:var(--sos);color:var(--on-sos)}
+.btn.success{background:var(--ok);color:#fff}
+.disguise{background:var(--soft);border-radius:20px;padding:18px;margin:22px 0 8px}
+.disguise .small{display:block;margin-top:2px}
+.mock{background:var(--bg);border-radius:14px;padding:4px 14px;margin:14px 0 4px}
+.mrow{display:flex;justify-content:space-between;align-items:center;min-height:46px;border-bottom:1px solid var(--line);font-size:16px}
+.mrow:last-child{border-bottom:none}
+.mrow.dim{color:var(--ink-2)}
+.mtag{font-size:13px;font-weight:700;padding:3px 10px;border-radius:10px;background:var(--primary);color:var(--on-primary)}
+.mtag.sos{background:var(--sos);color:var(--on-sos)}
+.dz-hint{background:var(--soft);border-radius:14px;padding:12px 14px;font-size:15px;margin:12px 0 0}
+.dz-hint button{margin-top:8px}
+#disfarce{display:none;padding:24px 20px;max-width:520px;margin:0 auto}
+#disfarce .notes{list-style:none;padding:0;margin:16px 0 24px}
+#disfarce li{padding:0;border-bottom:1px solid var(--line);font-size:18px;min-height:56px;display:flex;align-items:center}
+#disfarce li a,#disfarce li button{display:flex;align-items:center;width:100%;min-height:56px;color:var(--ink);text-decoration:none;background:none;border:none;font:inherit;text-align:left;padding:0;cursor:pointer}
+body.hidden-mode main,body.hidden-mode .tabbar{display:none}
+body.hidden-mode #disfarce{display:block}
+@media (prefers-reduced-motion: no-preference){.tab.on{animation:fade .18s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></symbol>
+  <symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></symbol>
+  <symbol id="list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="doc" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h4"/></symbol>
+  <symbol id="chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></symbol>
+  <symbol id="eye" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.6 9.6 0 0 1 12 6c5 0 9 6 9 6a15 15 0 0 1-2.4 3M6.3 7.6C4.2 9.2 3 12 3 12s4 6 9 6c1.6 0 3-.4 4.3-1.1"/></symbol>
+  <symbol id="tick" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+</svg>
+
+<main>
+
+<!-- ANTES -->
+<section class="tab" data-tab="antes" aria-labelledby="h-antes">
+  <h1 id="h-antes">Prepare-se antes de sair</h1>
+  <p class="sub">Quatro passos. Faça uma vez e revise antes de cada saída.</p>
+
+  <div class="callout" id="intro" hidden>
+    <b>O Vira Seguro funciona em três momentos, nas abas lá embaixo:</b>
+    <div class="intro-row"><span class="ib"><svg class="i"><use href="#list"/></svg></span><span><b>Antes</b>: cadastre um contato e se prepare para sair.</span></div>
+    <div class="intro-row"><span class="ib sos"><svg class="i"><use href="#alert"/></svg></span><span><b>Durante</b>: em perigo, ligue para o 190 ou avise seu contato com um toque.</span></div>
+    <div class="intro-row"><span class="ib"><svg class="i"><use href="#doc"/></svg></span><span><b>Depois</b>: escreva o que aconteceu e veja para onde enviar.</span></div>
+    <p class="small">Tudo fica só no seu celular.</p>
+    <button class="btn btn-primary" id="fecharIntro">Começar</button>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="num" id="n1">1</span><h2>Contato de confiança</h2></div>
+    <div id="contatoForm">
+      <p>Quem recebe sua localização se algo acontecer.</p>
+      <label class="f" for="c-nome">Nome</label>
+      <input class="input" id="c-nome" type="text" autocomplete="off" placeholder="Ana">
+      <label class="f" for="c-tel">WhatsApp com DDD</label>
+      <input class="input" id="c-tel" type="tel" inputmode="tel" autocomplete="off" placeholder="11 91234-5678">
+      <button class="btn btn-primary" id="salvarContato">Salvar contato</button>
+    </div>
+    <div class="saved" id="contatoSalvo" hidden>
+      <span><b id="contatoNome"></b><span class="small" id="contatoTel"></span></span>
+      <button class="linkbtn" id="trocarContato">Trocar</button>
+    </div>
+    <p class="msg" id="contatoMsg" aria-live="polite"></p>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="num">2</span><h2>Localização em tempo real</h2></div>
+    <p>Assim seu contato vê no mapa onde você está, por até 8 horas. Faça pelo próprio WhatsApp:</p>
+    <ol>
+      <li>Abra a conversa</li>
+      <li>Toque no clipe ou no +</li>
+      <li>Localização › Localização em tempo real</li>
+      <li>Escolha 8 horas</li>
+    </ol>
+    <a class="btn btn-white" id="abrirConversa" href="https://wa.me/" target="_blank" rel="noopener"><svg class="i"><use href="#chat"/></svg><span class="ell" id="abrirConversaTxt">Abrir o WhatsApp</span></a>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="num" id="n3">3</span><h2>Checklist</h2></div>
+    <p>Aonde você vai?</p>
+    <div class="seg" role="group" aria-label="Tipo de saída">
+      <button aria-pressed="true" data-ctx="rua">Rua</button>
+      <button aria-pressed="false" data-ctx="atos">Ato</button>
+      <button aria-pressed="false" data-ctx="redes">Redes</button>
+    </div>
+    <div class="seg" id="segCom" role="group" aria-label="Com quem você vai" style="grid-template-columns:1fr 1fr">
+      <button aria-pressed="false" data-com="so">Vou sozinha(o)</button>
+      <button aria-pressed="true" data-com="junto">Vou com alguém</button>
+    </div>
+    <div id="checklist"></div>
+    <p class="msg" id="checkMsg" aria-live="polite"></p>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="num">4</span><h2>Cartão de emergência</h2></div>
+    <p>Uma imagem com telefones úteis para usar como fundo da tela de bloqueio. Funciona mesmo sem internet. A imagem salva tem um espaço livre em cima para o relógio.</p>
+    <img class="cardimg" id="cardImg" alt="Cartão com os telefones 190, 180, 100 e seu contato de confiança">
+    <button class="btn btn-primary" id="salvarCartao"><svg class="i"><use href="#share"/></svg>Salvar imagem</button>
+    <p class="msg" id="cartaoMsg" aria-live="polite"></p>
+  </div>
+
+  <p class="h-sec">Guias de segurança</p>
+  <p class="sub">O que fazer durante e depois, em cada situação.</p>
+  <details class="acc" data-guide><summary>Na rua</summary><div class="acc-body">
+    <b>Durante</b><ul>
+      <li>Se a pessoa subir o tom, encerre com educação e se afaste. Não revide.</li>
+      <li>Sinais de risco: alguém chegando perto demais, mais gente se juntando, alguém filmando você de perto.</li>
+      <li>Ameaça ou agressão: saia, vá para onde tem gente e ligue 190.</li>
+    </ul><b>Depois</b><ul>
+      <li>Anote o que lembrar: lugar, hora, como era a pessoa, o que disse.</li>
+      <li>Avise seu grupo para ninguém voltar sozinho ao local.</li>
+      <li>No dia da eleição (25/10), pedir voto na rua é crime (boca de urna). O vira-voto vai até a véspera.</li>
+    </ul>
+    <button class="btn btn-white" data-share-guide="Na rua">Mandar este guia pro grupo</button>
+  </div></details>
+  <details class="acc" data-guide><summary>Atos e plenárias</summary><div class="acc-body">
+    <b>Durante</b><ul>
+      <li>Fique perto das bordas e saiba por onde sair.</li>
+      <li>Gás lacrimogêneo: vá para um lugar ventilado, contra o vento. Não esfregue os olhos. Lave com bastante água ou soro. Não use vinagre.</li>
+      <li>Você pode filmar a ação policial em espaço público. Filme de longe e sem ofender ninguém.</li>
+      <li>Em plenárias, combine antes se pode ter foto.</li>
+    </ul><b>Depois</b><ul>
+      <li>Confira se todo o grupo está bem.</li>
+      <li>Antes de postar, cubra o rosto de quem não autorizou.</li>
+      <li>Se alguém for detido, tem direito a advogado. Sem advogado, procure a Defensoria Pública.</li>
+    </ul>
+    <button class="btn btn-white" data-share-guide="Atos e plenárias">Mandar este guia pro grupo</button>
+  </div></details>
+  <details class="acc" data-guide><summary>Nas redes</summary><div class="acc-body">
+    <b>Durante um ataque</b><ul>
+      <li>Não responda. Engajamento alimenta o ataque.</li>
+      <li>Instagram: ative "Limites" e use "Restringir" em perfis específicos. TikTok: ligue os filtros de comentários.</li>
+      <li>Peça para alguém de confiança acompanhar por você.</li>
+      <li>Se aparecer seu endereço ou uma ameaça, avise quem mora com você e registre um boletim de ocorrência (BO) na polícia.</li>
+    </ul><b>Depois</b><ul>
+      <li>Antes de bloquear, tire prints com link, data e perfil visíveis.</li>
+      <li>Denuncie na plataforma e na SaferNet.</li>
+      <li>Em casos graves, peça a um cartório para registrar o conteúdo. Esse registro (ata notarial) vale mais como prova que um print.</li>
+    </ul>
+    <button class="btn btn-white" data-share-guide="Nas redes">Mandar este guia pro grupo</button>
+  </div></details>
+
+  <p class="h-sec">Para o vira-voto</p>
+  <p class="sub">Ferramentas que já existem para preparar a conversa.</p>
+  <a class="ext" href="https://todoscomlula.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Como conversar</b><small>Todos com Lula: argumentos por perfil de eleitor e simulador</small></span><svg class="i"><use href="#share"/></svg></a>
+  <a class="ext" href="https://dapravirar.vercel.app/numeros" target="_blank" rel="noopener"><span class="txt"><b>Onde estão os votos</b><small>Dá pra Virar: mapa da abstenção e resultado por cidade</small></span><svg class="i"><use href="#share"/></svg></a>
+
+  <button class="btn btn-soft" id="shareKit"><svg class="i"><use href="#share"/></svg>Mandar o kit pra alguém</button>
+  <p class="foot">Conferido em outubro de 2026, com foco em São Paulo. O kit orienta, mas não substitui emergência nem advogado.</p>
+</section>
+
+<!-- DURANTE -->
+<section class="tab" data-tab="durante" aria-labelledby="h-durante">
+  <h1 id="h-durante">Em perigo agora?</h1>
+  <p class="sub">Saia do local e vá para onde tem gente.</p>
+  <a class="btn btn-sos btn-xl" href="tel:190"><svg class="i"><use href="#phone"/></svg>Ligar 190</a>
+  <button class="btn btn-primary btn-xl" id="avisar"><svg class="i"><use href="#pin"/></svg><span class="ell" id="avisarTxt">Enviar minha localização</span></button>
+  <p class="msg" id="avisarMsg" aria-live="polite"></p>
+
+  <p class="label">Para encerrar a conversa</p>
+  <p class="say">"Tudo bem, respeito sua opinião."</p>
+  <p class="say">"Não vou insistir. Já tô indo."</p>
+
+  <div class="disguise">
+    <b style="font-size:19px">Disfarçar tela</b>
+    <span class="small">Se alguém olhar seu celular, o kit vira uma lista de compras. Dois itens continuam funcionando:</span>
+    <div class="mock" aria-hidden="true">
+      <div class="mrow"><span>Ligar</span><span class="mtag sos">chama o 190</span></div>
+      <div class="mrow"><span>Mensagem</span><span class="mtag" id="mtagMsg">avisa seu contato</span></div>
+      <div class="mrow dim"><span>Arroz</span></div>
+      <div class="mrow dim"><span>Voltar (no fim da lista)</span></div>
+    </div>
+    <button class="btn btn-primary" id="ocultar"><svg class="i"><use href="#eye"/></svg>Ativar disfarce</button>
+  </div>
+
+  <p class="label">Dicas para agora</p>
+  <details class="acc"><summary>Na rua</summary><div class="acc-body"><ul>
+    <li>Se a pessoa subir o tom, encerre e se afaste. Não revide.</li>
+    <li>Fique atenta(o) a quem chega perto demais ou a mais gente se juntando.</li>
+    <li>Em dupla, saiam juntos.</li>
+  </ul></div></details>
+  <details class="acc"><summary>Em ato ou plenária</summary><div class="acc-body"><ul>
+    <li>Fique perto das bordas e saiba por onde sair.</li>
+    <li>Gás lacrimogêneo: vá para um lugar ventilado, contra o vento. Não esfregue os olhos. Lave com bastante água ou soro. Não use vinagre.</li>
+    <li>Você pode filmar a ação policial em espaço público. Filme de longe e sem ofender ninguém.</li>
+  </ul></div></details>
+  <details class="acc"><summary>Nas redes</summary><div class="acc-body"><ul>
+    <li>Não responda. Engajamento alimenta o ataque.</li>
+    <li>Instagram: ative "Limites" e use "Restringir" em perfis específicos. TikTok: ligue os filtros de comentários.</li>
+    <li>Tire prints com link, data e perfil antes de bloquear.</li>
+    <li>Se aparecer seu endereço ou uma ameaça, avise quem mora com você.</li>
+  </ul></div></details>
+
+</section>
+
+<!-- DEPOIS -->
+<section class="tab" data-tab="depois" aria-labelledby="h-depois">
+  <h1 id="h-depois">Denuncie o que aconteceu</h1>
+  <p class="sub">Toque no que aconteceu com você. Mostramos aonde ir e o que levar.</p>
+
+  <div class="step">
+    <div class="step-head"><span class="num" id="d1">1</span><h2>O que aconteceu?</h2></div>
+    <div id="casos" role="group" aria-label="Tipo de caso"></div>
+  </div>
+
+  <div class="step" id="passo3">
+    <div class="step-head"><span class="num">2</span><h2>O que fazer agora</h2></div>
+    <p id="destHint">Escolha o caso acima para ver aonde ir.</p>
+    <div id="destinos" aria-live="polite"></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="num" id="d2">3</span><h2>Escreva o relato</h2></div>
+    <p>Na delegacia ou ao telefone, vão perguntar o que houve. Escreva aqui uma vez, enquanto lembra, e copie para onde precisar. Nada fica salvo.</p>
+    <label class="f" for="r-oque">O que aconteceu <small>(se lembrar, escreva as palavras exatas)</small></label><textarea class="input" id="r-oque"></textarea>
+    <label class="f" for="r-quando">Quando</label><input class="input" type="datetime-local" id="r-quando">
+    <label class="f" for="r-onde">Onde <small>(endereço, referência ou link)</small></label><input class="input" type="text" id="r-onde">
+    <label class="f" for="r-quem">Quem fez <small>(como era a pessoa, ou o nome do perfil)</small></label><input class="input" type="text" id="r-quem">
+    <label class="f" for="r-test">Quem viu <small>(opcional)</small></label><input class="input" type="text" id="r-test">
+    <label class="f" for="r-provas">O que você tem para mostrar <small>(prints, fotos, vídeos, links)</small></label><input class="input" type="text" id="r-provas">
+    <button class="btn btn-primary" id="gerar">Gerar texto do relato</button>
+    <p class="msg" id="relatoMsg" aria-live="polite"></p>
+    <div id="relatoPronto" hidden>
+      <div class="output" id="texto"></div>
+      <button class="btn btn-primary" id="copiar">Copiar texto</button>
+      <button class="btn btn-white" id="enviarRelato"><svg class="i"><use href="#share"/></svg>Enviar ou salvar</button>
+    </div>
+    <button class="btn btn-white" id="apagar">Apagar relato</button>
+  </div>
+
+  <div class="callout"><b>Você não fez nada de errado.</b> Fazer campanha é um direito. Se estiver abalada(o), fale com alguém de confiança antes de voltar para a rua ou as redes.</div>
+</section>
+
+</main>
+
+<div id="disfarce" aria-label="Tela disfarçada">
+  <h1>Lista de compras</h1>
+  <div class="dz-hint" id="dzHint" hidden><b>Disfarce ativo.</b> "Ligar" chama o 190. "Mensagem" avisa seu contato. "Voltar" fica no fim da lista. Este aviso não aparece de novo.<button class="btn btn-soft" id="dzOk">Entendi</button></div>
+  <ul class="notes">
+    <li><a href="tel:190">Ligar</a></li>
+    <li><button id="dAvisar">Mensagem</button></li>
+    <li>Arroz</li><li>Feijão</li><li>Café</li><li>Pão</li>
+  </ul>
+  <button class="btn btn-soft" id="voltarKit">Voltar</button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<nav class="tabbar" aria-label="Momentos">
+  <div class="tabbar-in">
+    <button class="tabbtn" data-go="antes"><svg class="i"><use href="#list"/></svg>Antes<small>Se preparar</small></button>
+    <button class="tabbtn sos" data-go="durante"><svg class="i"><use href="#alert"/></svg>Durante<small>Em perigo</small></button>
+    <button class="tabbtn" data-go="depois"><svg class="i"><use href="#doc"/></svg>Depois<small>Denunciar</small></button>
+  </div>
+</nav>
+
+<script>
+(function(){
+  var KIT_URL = 'https://claude.ai/artifact/W9XsnWf3N8XxqEFopnUBVt';
+  var store = {
+    get:function(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+    set:function(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+    del:function(k){ try{ localStorage.removeItem(k); }catch(e){} }
+  };
+  function $(id){ return document.getElementById(id); }
+  function say(el, t, err){ el.textContent = t; el.classList.toggle('err', !!err); }
+  function wa(num, text){ var u = 'https://wa.me/' + (num || '') + (text ? '?text=' + encodeURIComponent(text) : ''); if(!window.open(u, '_blank', 'noopener')) location.href = u; }
+  async function shareText(text){
+    try{ if(navigator.share){ await navigator.share({text:text}); return; } wa('', text); }
+    catch(e){ if(!e || e.name !== 'AbortError') wa('', text); }
+  }
+  function contato(){ return store.get('contato'); }
+  var tt;
+  function toast(t, err){ var el = $('toast'); el.textContent = t; el.className = 'toast on ' + (err ? 'err' : 'ok'); clearTimeout(tt); tt = setTimeout(function(){ el.className = 'toast'; }, 2600); }
+  function flash(btn, label){ var orig = btn.innerHTML; btn.classList.add('success'); btn.textContent = label; setTimeout(function(){ btn.classList.remove('success'); btn.innerHTML = orig; }, 1800); }
+
+  /* abas */
+  var tabs = document.querySelectorAll('.tab'), btns = document.querySelectorAll('.tabbtn');
+  function go(name, focus){
+    tabs.forEach(function(t){ t.classList.toggle('on', t.dataset.tab === name); });
+    btns.forEach(function(b){ if(b.dataset.go === name) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+    window.scrollTo(0,0);
+    if(focus){ var h = document.querySelector('.tab.on h1'); h.setAttribute('tabindex','-1'); h.focus({preventScroll:true}); }
+  }
+  btns.forEach(function(b){ b.onclick = function(){ go(b.dataset.go, true); }; });
+
+  /* intro */
+  if(!store.get('onboarded')) $('intro').hidden = false;
+  $('fecharIntro').onclick = function(){ $('intro').hidden = true; store.set('onboarded', true); };
+
+  /* contato */
+  function digits(t){ var d = (t||'').replace(/\D/g,''); if(d.length === 10 || d.length === 11) d = '55' + d; return d; }
+  function renderContato(){
+    var c = contato();
+    $('contatoForm').hidden = !!c; $('contatoSalvo').hidden = !c;
+    $('n1').classList.toggle('done', !!c); $('n1').textContent = c ? '✓' : '1';
+    if(c){ $('contatoNome').textContent = c.nome; $('contatoTel').textContent = ' · ' + c.tel; }
+    $('avisarTxt').textContent = c ? 'Avisar ' + c.nome : 'Enviar minha localização';
+    $('abrirConversaTxt').textContent = c ? 'Abrir conversa com ' + c.nome : 'Abrir o WhatsApp';
+    $('abrirConversa').href = 'https://wa.me/' + (c ? c.wa : '');
+    $('mtagMsg').textContent = c ? 'avisa ' + c.nome : 'avisa seu contato';
+  }
+  $('salvarContato').onclick = function(){
+    var nome = $('c-nome').value.trim(), tel = $('c-tel').value.trim(), m = $('contatoMsg');
+    if(!nome) return say(m, 'Escreva o nome do contato.', true);
+    var d = digits(tel);
+    if(d.length < 12 || d.length > 13) return say(m, 'Confira o número: DDD e número, como 11 91234-5678.', true);
+    store.set('contato', {nome:nome, tel:tel, wa:d}); renderContato(); drawCard(); say(m, ''); toast('Contato salvo.');
+  };
+  $('trocarContato').onclick = function(){
+    var c = contato(); $('c-nome').value = c ? c.nome : ''; $('c-tel').value = c ? c.tel : '';
+    store.del('contato'); renderContato(); say($('contatoMsg'), ''); $('c-nome').focus();
+  };
+
+  /* checklist */
+  var lists = {
+    'rua-junto':['Vou em dupla e combinamos um ponto de encontro','Compartilhei minha localização em tempo real','Combinamos uma palavra para irmos embora','Vou a um lugar movimentado e de dia'],
+    'rua-so':['Avisei meu contato aonde vou e até que horas','Compartilhei minha localização em tempo real','Vou a um lugar movimentado e de dia','Sei onde tem comércio aberto ou gente por perto, caso precise sair'],
+    'atos-junto':['Vou em grupo e combinamos onde nos reencontrar','Anotei um telefone de confiança no papel ou no braço','Levo documento, água e celular carregado','Meu celular tem senha'],
+    'atos-so':['Avisei meu contato aonde vou e combinei um horário para dar notícia','Compartilhei minha localização em tempo real','Anotei um telefone de confiança no papel ou no braço','Levo documento, água e celular carregado','Meu celular tem senha'],
+    'redes':['Ativei a verificação em duas etapas','Tirei do ar endereço, telefone e fotos da frente de casa','Cadastrei palavras ofensivas em "Palavras ocultas" no Instagram']
+  };
+  var com = store.get('com') || 'junto';
+  function lkey(){ return ctx === 'redes' ? 'redes' : ctx + '-' + com; }
+  function items(){ return lists[lkey()]; }
+  var ctx = 'rua';
+  function renderChecklist(){
+    var saved = store.get('check-' + lkey()) || [], box = $('checklist'); box.innerHTML = '';
+    $('segCom').hidden = ctx === 'redes';
+    document.querySelectorAll('#segCom button').forEach(function(x){ x.setAttribute('aria-pressed', String(x.dataset.com === com)); });
+    items().forEach(function(t, i){
+      var l = document.createElement('label'); l.className = 'check';
+      var inp = document.createElement('input'); inp.type = 'checkbox'; inp.checked = !!saved[i];
+      var b = document.createElement('span'); b.className = 'box'; b.innerHTML = '<svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>';
+      var s = document.createElement('span'); s.textContent = t;
+      inp.onchange = function(){ saved[i] = inp.checked; store.set('check-' + lkey(), saved); progress(); };
+      l.append(inp, b, s); box.appendChild(l);
+    });
+    progress();
+  }
+  function progress(){
+    var saved = store.get('check-' + lkey()) || [], n = saved.filter(Boolean).length, total = items().length;
+    var m = $('checkMsg');
+    if(n === total){ m.className = 'msg done'; m.textContent = 'Tudo pronto para sair.'; }
+    else { m.className = 'msg warn'; m.textContent = (total - n === 1 ? 'Falta 1 item.' : 'Faltam ' + (total - n) + ' itens.') + ' Vale revisar antes de sair.'; }
+    $('n3').classList.toggle('done', n === total); $('n3').textContent = n === total ? '✓' : '3';
+  }
+  document.querySelectorAll('#segCom button').forEach(function(b){
+    b.onclick = function(){ com = b.dataset.com; store.set('com', com); renderChecklist(); };
+  });
+  document.querySelectorAll('.seg button[data-ctx]').forEach(function(b){
+    b.onclick = function(){
+      ctx = b.dataset.ctx;
+      document.querySelectorAll('.seg button[data-ctx]').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+      renderChecklist();
+    };
+  });
+
+  /* cartão */
+  var cardBlob = null;
+  function rr(x,l,t,w,h,r){ x.beginPath(); x.moveTo(l+r,t); x.arcTo(l+w,t,l+w,t+h,r); x.arcTo(l+w,t+h,l,t+h,r); x.arcTo(l,t+h,l,t,r); x.arcTo(l,t,l+w,t,r); x.closePath(); }
+  function drawCard(){
+    var cv = document.createElement('canvas'), W = 1080, H = 1920; cv.width = W; cv.height = H;
+    var x = cv.getContext('2d'), F = '"Figtree", Arial, sans-serif';
+    function paint(){
+      x.fillStyle = '#121214'; x.fillRect(0,0,W,H);
+      x.fillStyle = '#FFFFFF'; x.font = '800 84px ' + F; x.fillText('Em caso de', 90, 560); x.fillText('emergência', 90, 660);
+      var y = 800;
+      [['190','Polícia Militar'],['180','Central da Mulher'],['100','Direitos Humanos']].forEach(function(r){
+        x.fillStyle = '#D7132E'; rr(x,90,y,900,180,36); x.fill();
+        x.fillStyle = '#FFFFFF'; x.font = '800 96px ' + F; x.fillText(r[0], 140, y + 122);
+        x.font = '600 48px ' + F; x.fillText(r[1], 390, y + 108); y += 210;
+      });
+      var c = contato();
+      x.fillStyle = '#26262B'; rr(x,90,y,900,200,36); x.fill();
+      x.fillStyle = '#A6A6B2'; x.font = '600 40px ' + F; x.fillText('Contato de confiança', 140, y + 72);
+      x.fillStyle = '#FFFFFF'; x.font = '700 52px ' + F; x.fillText(c ? c.nome + '  ' + c.tel : '______________________', 140, y + 145);
+      $('cardImg').src = cv.toDataURL('image/png'); cv.toBlob(function(b){ cardBlob = b; });
+    }
+    (document.fonts && document.fonts.load) ? document.fonts.load('800 84px Figtree').then(paint, paint) : paint();
+  }
+  $('salvarCartao').onclick = async function(){
+    var m = $('cartaoMsg');
+    try{
+      var f = cardBlob && new File([cardBlob], 'cartao-emergencia.png', {type:'image/png'});
+      if(f && navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f]}); return; }
+      say(m, 'Toque e segure na imagem para salvar.');
+    }catch(e){ if(e.name !== 'AbortError') say(m, 'Toque e segure na imagem para salvar.'); }
+  };
+
+  /* emergência */
+  $('avisar').onclick = function(){
+    var c = contato(), m = $('avisarMsg'), base = 'Preciso de ajuda. Estou fazendo campanha e me sinto em risco.';
+    if(!navigator.geolocation) return wa(c && c.wa, base);
+    say(m, 'Pegando sua localização…');
+    navigator.geolocation.getCurrentPosition(function(p){
+      say(m, ''); wa(c && c.wa, base + ' Estou aqui: https://maps.google.com/?q=' + p.coords.latitude.toFixed(5) + ',' + p.coords.longitude.toFixed(5));
+    }, function(){ say(m, 'Sem localização. Abrindo o WhatsApp mesmo assim.'); wa(c && c.wa, base); }, {timeout:6000, maximumAge:60000});
+  };
+  $('ocultar').onclick = function(){ document.body.classList.add('hidden-mode'); $('dzHint').hidden = !!store.get('dzSeen'); window.scrollTo(0,0); };
+  $('dzOk').onclick = function(){ $('dzHint').hidden = true; store.set('dzSeen', true); };
+  $('dAvisar').onclick = function(){ $('avisar').click(); };
+  $('voltarKit').onclick = function(){ document.body.classList.remove('hidden-mode'); $('dzHint').hidden = true; store.set('dzSeen', true); };
+
+  document.querySelectorAll('[data-share-guide]').forEach(function(b){
+    b.onclick = function(){
+      var body = b.parentElement, lines = ['*Segurança: ' + b.dataset.shareGuide + '*'];
+      body.querySelectorAll('b, li').forEach(function(el){ lines.push(el.tagName === 'B' ? '\n*' + el.textContent + '*' : '• ' + el.textContent); });
+      lines.push('', 'Kit completo: ' + KIT_URL);
+      shareText(lines.join('\n'));
+    };
+  });
+
+  /* compartilhar kit */
+  $('shareKit').onclick = function(){
+    shareText('Vira Seguro: kit de segurança pra quem faz vira-voto. O que fazer antes de sair, na hora do perigo e onde denunciar depois. ' + KIT_URL);
+  };
+
+  /* depois: casos, relato e destinos */
+  var CH = {
+    p190:{t:'Ligue 190', why:'É a Polícia Militar. Ligue se a pessoa ainda está por perto ou se você não se sente segura(o).', acts:[['Ligar 190','tel:190','sos']]},
+    saude:{t:'Procure atendimento médico', why:'Se você se machucou. O registro do atendimento também serve como prova.', acts:[['Pronto-socorro mais próximo','https://www.google.com/maps/search/pronto+socorro/']]},
+    deleg:{t:'Registre um boletim de ocorrência (BO)', why:'O BO é o registro oficial do que aconteceu, feito na polícia. Se você se machucou, vá à delegacia: lá pedem o exame que comprova a agressão.', tip:'o relato no celular e as provas.', acts:[['Delegacia mais próxima','https://www.google.com/maps/search/delegacia+de+policia/']]},
+    ddm:{t:'Vá a uma Delegacia da Mulher', why:'Delegacia que atende só casos de violência contra mulheres.', tip:'o relato e as provas.', acts:[['Delegacia da Mulher mais próxima','https://www.google.com/maps/search/delegacia+da+mulher/']]},
+    cmb:{t:'Vá à Casa da Mulher Brasileira', why:'Aberta 24 horas. No mesmo lugar tem Delegacia da Mulher, psicólogas e advogadas. Fica na Rua Vieira Ravasco, 26, no Cambuci.', tip:'o relato e as provas.', acts:[['Ligar','tel:+551132758000'],['Ver no mapa','https://maps.google.com/?q=Rua+Vieira+Ravasco+26+Cambuci+Sao+Paulo']]},
+    bo:{t:'Faça o BO pela internet', why:'Em SP, ameaças, ofensas e mentiras sobre você podem ser registradas online, sem ir à delegacia.', tip:'cole o relato onde pedem para contar o que aconteceu.', acts:[['Abrir Delegacia Eletrônica','https://www.delegaciaeletronica.policiacivil.sp.gov.br']]},
+    p180:{t:'Ligue 180', why:'Central de atendimento à mulher. Escuta, orienta e encaminha sua denúncia. Funciona 24 horas e sua identidade fica protegida.', tip:'use o relato para contar o que houve.', acts:[['Ligar 180','tel:180']]},
+    p100:{t:'Ligue 100 ou mande WhatsApp', why:'Recebe denúncias de violência por política, racismo, LGBTfobia e outras violações de direitos. Você não precisa se identificar.', tip:'no WhatsApp, cole o relato.', acts:[['Ligar 100','tel:100'],['WhatsApp','https://wa.me/5561996110100']]},
+    pf:{t:'Avise a Polícia Federal', why:'Atacar alguém por fazer campanha é crime eleitoral, e quem investiga é a Polícia Federal. Você não precisa se identificar.', tip:'cole o relato no formulário.', acts:[['Abrir site da PF','https://www.gov.br/pf']]},
+    rede:{t:'Denuncie na própria rede social', why:'Use o botão de denunciar no post e no perfil. Peça para amigos fazerem o mesmo: muitas denúncias chamam mais atenção.', tip:'tire prints com o link, a data e o perfil antes de denunciar.'},
+    safer:{t:'Denuncie na SaferNet', why:'Organização que recebe denúncias de ódio na internet e repassa às autoridades. É só colar o link. Não precisa se identificar.', acts:[['Abrir denuncie.org.br','https://denuncie.org.br']]},
+    tse:{t:'Use o canal do TSE', why:'Para candidatas e eleitas. O TSE é o tribunal das eleições, e esse canal leva a denúncia ao Ministério Público.', tip:'cole o relato no formulário.', acts:[['Abrir canal do TSE','https://www.tse.jus.br/eleitor/denuncias/canal-de-denuncias-para-violencia-politica-de-genero']]},
+    pardal:{t:'Denuncie no app Pardal', why:'App oficial da Justiça Eleitoral. Recebe denúncias de propaganda irregular, compra de voto e pedido de voto no dia da eleição. Pede login, mas seu nome fica em sigilo.', acts:[['Saber mais','https://www.tse.jus.br/comunicacao/noticias/2026/Agosto/pardal-ja-esta-disponivel-para-denuncias-de-irregularidades-na-propaganda-eleitoral']]},
+    def:{t:'Peça ajuda à Defensoria Pública', why:'Advogados públicos e gratuitos, se você precisar de orientação ou quiser abrir um processo.', acts:[['Abrir site','https://www.defensoria.sp.def.br']]}
+  };
+  var CASES = [
+    {k:'agressao', t:'Me agrediram ou estão me seguindo', ch:[['p190','Faça agora'],['saude','Se você se machucou'],['deleg'],['cmb','Se você é mulher'],['pf','Se foi por causa da campanha']]},
+    {k:'ameaca', t:'Me ameaçaram, xingaram ou assediaram', s:'Na rua ou na internet', ch:[['bo'],['p100'],['p180','Se você é mulher'],['def','Se precisar de advogado']]},
+    {k:'odio', t:'Me atacaram nas redes', s:'Por raça, gênero, sexualidade ou religião', ch:[['rede','Faça primeiro'],['safer'],['bo','Se teve ameaça'],['p100']]},
+    {k:'mulher', t:'Me atacaram por eu ser mulher', s:'Na rua, na campanha ou na internet', ch:[['p180'],['cmb'],['ddm'],['tse','Se você é candidata ou eleita']]},
+    {k:'eleitoral', t:'Vi um crime na eleição', s:'Compra de voto, ameaça a eleitores, propaganda irregular', ch:[['pardal'],['pf','Se houve ameaça ou violência']]}
+  ];
+  var current = null;
+  CASES.forEach(function(c){
+    var b = document.createElement('button'); b.className = 'opt'; b.setAttribute('aria-pressed','false'); b.dataset.k = c.k;
+    var t = document.createElement('span'); t.textContent = c.t;
+    if(c.s){ var sm = document.createElement('small'); sm.textContent = c.s; t.appendChild(sm); }
+    var d = document.createElement('span'); d.className = 'dot';
+    b.append(t, d);
+    b.onclick = function(){
+      current = c;
+      document.querySelectorAll('.opt').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+      $('d1').classList.add('done'); $('d1').textContent = '✓';
+      renderDest();
+      $('passo3').scrollIntoView({behavior:'smooth', block:'start'});
+    };
+    $('casos').appendChild(b);
+  });
+  function renderDest(){
+    var box = $('destinos'); box.innerHTML = '';
+    if(!current){ $('destHint').hidden = false; return; }
+    $('destHint').hidden = true;
+    current.ch.forEach(function(pair){
+      var c = CH[pair[0]], el = document.createElement('div'); el.className = 'dest';
+      if(pair[1]){ var tg = document.createElement('span'); tg.className = 'tag'; tg.textContent = pair[1]; el.appendChild(tg); }
+      var bt = document.createElement('b'); bt.textContent = c.t; el.appendChild(bt);
+      var w = document.createElement('p'); w.className = 'why'; w.textContent = c.why; el.appendChild(w);
+      if(c.acts){
+        var a = document.createElement('div'); a.className = 'acts';
+        c.acts.forEach(function(x){
+          var l = document.createElement('a'); l.className = 'btn' + (x[2] === 'sos' ? ' btn-sos' : ''); l.textContent = x[0]; l.href = x[1];
+          if(x[1].indexOf('http') === 0){ l.target = '_blank'; l.rel = 'noopener'; }
+          a.appendChild(l);
+        });
+        el.appendChild(a);
+      }
+      if(c.tip){ var tp = document.createElement('p'); tp.className = 'tip'; tp.textContent = 'Leve junto: ' + c.tip; el.appendChild(tp); }
+      box.appendChild(el);
+    });
+  }
+
+  var ids = ['oque','quando','onde','quem','test','provas'], labels = ['O que aconteceu','Quando','Onde','Quem fez','Testemunhas','Provas'];
+  var fields = ids.map(function(k){ return $('r-' + k); });
+  function fmt(v){ if(!v) return ''; var d = new Date(v); return isNaN(d) ? v : d.toLocaleString('pt-BR', {dateStyle:'long', timeStyle:'short'}); }
+  $('gerar').onclick = function(){
+    var parts = ['RELATO DE OCORRÊNCIA'], m = $('relatoMsg');
+    if(current) parts.push('Tipo de caso: ' + current.t);
+    var filled = 0;
+    fields.forEach(function(el, i){ var v = i === 1 ? fmt(el.value) : el.value.trim(); if(v){ parts.push(labels[i] + ': ' + v); filled++; } });
+    if(!filled){ $('relatoPronto').hidden = true; return say(m, 'Preencha pelo menos um campo.', true); }
+    say(m, current ? 'Pronto. Copie o texto e use nos canais do passo 2.' : 'Pronto. Escolha o caso no passo 1 para ver aonde enviar.');
+    $('texto').textContent = parts.join('\n\n'); $('relatoPronto').hidden = false;
+    $('d2').classList.add('done'); $('d2').textContent = '✓';
+    toast('Texto do relato pronto.');
+  };
+  $('copiar').onclick = async function(){
+    var b = this;
+    try{ await navigator.clipboard.writeText($('texto').textContent); flash(b, 'Copiado ✓'); toast('Relato copiado. Cole no canal do passo 2.'); }
+    catch(e){
+      var r = document.createRange(); r.selectNodeContents($('texto')); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      toast('Não deu para copiar sozinho. O texto está selecionado: use Copiar do celular.', true);
+    }
+  };
+  $('enviarRelato').onclick = async function(){
+    var t = $('texto').textContent;
+    try{
+      if(navigator.share){ await navigator.share({title:'Relato de ocorrência', text:t}); toast('Relato enviado.'); }
+      else { wa('', t); }
+    }catch(e){ if(e.name !== 'AbortError') toast('Não deu para abrir o compartilhamento. Use Copiar texto.', true); }
+  };
+  var apagarT;
+  $('apagar').onclick = function(){
+    var b = this, any = fields.some(function(el){ return el.value.trim(); });
+    if(!any && $('relatoPronto').hidden){ return toast('Não há nada para apagar.', true); }
+    if(!b.classList.contains('confirming')){
+      b.classList.add('confirming'); b.textContent = 'Toque de novo para apagar tudo';
+      clearTimeout(apagarT); apagarT = setTimeout(function(){ b.classList.remove('confirming'); b.textContent = 'Apagar relato'; }, 4000);
+      return;
+    }
+    clearTimeout(apagarT); b.classList.remove('confirming'); b.textContent = 'Apagar relato';
+    fields.forEach(function(el){ el.value = ''; }); $('texto').textContent = ''; $('relatoPronto').hidden = true;
+    $('d2').classList.remove('done'); $('d2').textContent = '3'; say($('relatoMsg'), '');
+    toast('Relato apagado.');
+  };
+
+  renderContato(); renderChecklist(); drawCard();
+  go(contato() ? 'durante' : 'antes', false);
+})();
+</script>
+</body>
+</html>
