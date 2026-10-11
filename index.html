@@ -98,6 +98,7 @@ label.f small{font-weight:500;color:var(--ink-2)}
 .msg.err{color:var(--sos)}
 .saved{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border-radius:14px;padding:12px 14px}
 .saved b{display:block}
+.saved[hidden]{display:none}
 .linkbtn{background:none;border:none;color:var(--ink);font:inherit;font-weight:700;text-decoration:underline;min-height:48px;cursor:pointer;padding:0 6px}
 
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg);border-radius:14px;padding:4px;margin:4px 0 10px}
@@ -120,8 +121,10 @@ details.acc summary::after{content:"";width:10px;height:10px;border-right:2.5px 
 details.acc[open] summary::after{transform:rotate(-135deg)}
 details.acc summary small{display:block;font-weight:500;color:var(--ink-2);font-size:15px}
 .acc-body{padding:0 18px 18px}
-.acc-body ul{margin:0;padding-left:20px}
+.acc-body ul,.acc-body ol{margin:0;padding-left:20px}
 .acc-body li{margin:8px 0}
+#instalarBtn{margin-bottom:14px}
+#instalarBtn[hidden],#instalar[hidden]{display:none}
 .ch{background:var(--bg);border-radius:14px;padding:14px;margin:10px 0}
 .ch b{display:block}
 .ch p{color:var(--ink-2);font-size:15px;margin:2px 0 4px}
@@ -226,9 +229,9 @@ body.hidden-mode #disfarce{display:block}
     <div id="contatoForm">
       <p>Quem recebe sua localização se algo acontecer.</p>
       <label class="f" for="c-nome">Nome</label>
-      <input class="input" id="c-nome" type="text" autocomplete="off" placeholder="Ana">
+      <input class="input" id="c-nome" type="text" autocomplete="off" placeholder="Nome do contato">
       <label class="f" for="c-tel">WhatsApp com DDD</label>
-      <input class="input" id="c-tel" type="tel" inputmode="tel" autocomplete="off" placeholder="11 91234-5678">
+      <input class="input" id="c-tel" type="tel" inputmode="tel" autocomplete="off" placeholder="Número do contato com DDD">
       <button class="btn btn-primary" id="salvarContato">Salvar contato</button>
     </div>
     <div class="saved" id="contatoSalvo" hidden>
@@ -272,6 +275,24 @@ body.hidden-mode #disfarce{display:block}
     <img class="cardimg" id="cardImg" alt="Cartão com os telefones 190, 180, 100 e seu contato de confiança">
     <button class="btn btn-primary" id="salvarCartao"><svg class="i"><use href="#share"/></svg>Salvar imagem</button>
     <p class="msg" id="cartaoMsg" aria-live="polite"></p>
+  </div>
+
+  <div id="instalar">
+  <p class="h-sec">Tenha o kit à mão</p>
+  <p class="sub">Coloque o Vira Seguro na tela de início. Ele abre com um toque, mesmo sem internet.</p>
+  <details class="acc"><summary>Como instalar no celular</summary><div class="acc-body">
+    <button class="btn btn-primary" id="instalarBtn" hidden>Instalar o Vira Seguro</button>
+    <b>iPhone</b><ol>
+      <li>Abra este site no Safari ou no Chrome.</li>
+      <li>Toque no botão de compartilhar (o quadrado com a seta para cima).</li>
+      <li>Toque em "Adicionar à Tela de Início" e depois em "Adicionar".</li>
+    </ol><b>Android</b><ol>
+      <li>Abra este site no Chrome.</li>
+      <li>Toque nos três pontinhos, no canto de cima.</li>
+      <li>Toque em "Instalar app" ou "Adicionar à tela inicial".</li>
+    </ol>
+    <p class="small">Abra uma vez com internet. Depois ele funciona offline.</p>
+  </div></details>
   </div>
 
   <p class="h-sec">Guias de segurança</p>
@@ -696,6 +717,12 @@ body.hidden-mode #disfarce{display:block}
     $('d2').classList.remove('done'); $('d2').textContent = '3'; say($('relatoMsg'), '');
     toast('Relato apagado.');
   };
+
+  if((window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone) $('instalar').hidden = true;
+  var installEvt = null;
+  window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); installEvt = e; $('instalarBtn').hidden = false; });
+  window.addEventListener('appinstalled', function(){ $('instalar').hidden = true; });
+  $('instalarBtn').onclick = function(){ if(!installEvt) return; installEvt.prompt(); installEvt = null; $('instalarBtn').hidden = true; };
 
   renderContato(); renderChecklist(); drawCard();
   go(contato() ? 'durante' : 'antes', false);
