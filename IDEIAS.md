@@ -24,3 +24,28 @@
 - Não criar uma aba só para o ponto de encontro: ele é preparado no Antes e usado no Durante, e já aparece nos dois.
 
 **Como fazer:** implementar com calma, longe de um ato. Testar antes com algumas pessoas numa versão separada (preview da Vercel), sem mexer no endereço principal.
+
+## Ficha de segurança para enviar aos contatos
+
+**Ideia:** ajudar a pessoa a montar uma ficha com informações importantes e mandar para quem confia (ou guardar nas próprias notas), **sem o kit salvar nada**. Mesmo princípio do relato na aba Depois: preenche, gera o texto, envia, e os campos são apagados.
+
+**Campos sugeridos (todos opcionais):**
+- Nome completo e como prefere ser chamada(o)
+- Endereço de casa
+- Outras pessoas para avisar (família, quem mora junto) e telefones
+- Saúde: alergias, remédios de uso contínuo, condições importantes, tipo sanguíneo
+- Advogada(o) ou contato jurídico de confiança (ou "procurar a Defensoria")
+- Combinados: até que horas vai dar notícia e o que fazer se não der (ex.: "me ligue; se eu não atender em 30 min, avise a minha mãe")
+- Observações livres
+
+**Como funcionaria:**
+- Nova opção na aba Antes, perto dos contatos: "Ficha de segurança".
+- Botões: "Mandar pro contato" (WhatsApp do contato principal ou menu de compartilhar) e "Copiar" (para colar nas notas do celular).
+- Ao sair da tela ou depois de enviar, os campos são apagados. Aviso claro: "Nada fica salvo no kit".
+
+**Cuidados:**
+- Depois de enviada, a ficha fica no WhatsApp de quem recebeu. Orientar a mandar só para pessoas de muita confiança e sugerir as mensagens temporárias do WhatsApp.
+- Não pedir CPF, RG nem senhas. Se a pessoa quiser incluir documentos, que seja por conta própria no campo livre.
+- Texto curto e organizado, fácil de ler no celular numa emergência.
+
+**Pode combinar com:** um "combinado de horário" (check-in), em que a pessoa define até que horas vai dar notícia e o kit gera a mensagem para o contato com esse combinado.
