@@ -192,6 +192,10 @@ details.acc summary small{display:block;font-weight:500;color:var(--ink-2);font-
 .secnav a{flex:1 0 auto;display:flex;align-items:center;justify-content:center;min-height:40px;padding:0 10px;border-radius:999px;background:var(--soft);color:var(--ink);font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap}
 .secnav a[aria-current="true"]{background:var(--primary);color:var(--on-primary)}
 [data-sec]{scroll-margin-top:72px}
+h1[tabindex="-1"]:focus{outline:none}
+dialog.confirm{width:min(420px,calc(100% - 32px));background:var(--soft)}
+dialog.confirm p{margin:8px 0 0;color:var(--ink-2)}
+.btn-danger{background:var(--sos);color:var(--on-sos)}
 .toast{position:fixed;left:50%;transform:translateX(-50%) translateY(10px);bottom:calc(92px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);font-weight:700;font-size:16px;padding:12px 18px;border-radius:14px;z-index:30;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok::before{content:"✓  "}
@@ -489,6 +493,14 @@ body.hidden-mode #disfarce{display:block}
   </div>
   <button class="btn btn-soft" id="fecharAjuda2">Entendi</button>
 </dialog>
+<dialog class="help confirm" id="confirmaExcluir" aria-labelledby="h-excluir">
+  <h2 id="h-excluir">Excluir contato?</h2>
+  <p id="excluirTxt"></p>
+  <div class="btn-row">
+    <button class="btn btn-white" id="excluirNao">Cancelar</button>
+    <button class="btn btn-danger" id="excluirSim">Excluir</button>
+  </div>
+</dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <nav class="tabbar" aria-label="Momentos">
   <div class="tabbar-in">
@@ -529,6 +541,7 @@ body.hidden-mode #disfarce{display:block}
     tabs.forEach(function(t){ t.classList.toggle('on', t.dataset.tab === name); });
     btns.forEach(function(b){ if(b.dataset.go === name) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     window.scrollTo(0,0);
+    if(name === 'antes' && $('secnav')) marcar('sec-passos');
     if(focus){ var h = document.querySelector('.tab.on h1'); h.setAttribute('tabindex','-1'); h.focus({preventScroll:true}); }
   }
   btns.forEach(function(b){ b.onclick = function(){ go(b.dataset.go, true); }; });
@@ -550,17 +563,26 @@ body.hidden-mode #disfarce{display:block}
       e.preventDefault();
       var alvo = document.querySelector(a.getAttribute('href'));
       var suave = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-      alvo.scrollIntoView({behavior: suave ? 'smooth' : 'auto', block:'start'}); marcar(alvo.id);
+      travado = true; marcar(alvo.id);
+      alvo.scrollIntoView({behavior: suave ? 'smooth' : 'auto', block:'start'});
+      clearTimeout(travaT); travaT = setTimeout(function(){ travado = false; }, 1200);
     };
   });
+  var travado = false, travaT;
   function secAtual(){
+    if(travado || !document.querySelector('.tab.on[data-tab="antes"]')) return;
     var atual = null;
     document.querySelectorAll('[data-sec]').forEach(function(el){ if(el.getBoundingClientRect().top <= 90) atual = el.id; });
     var secs = document.querySelectorAll('[data-sec]'), fim = innerHeight + scrollY >= document.documentElement.scrollHeight - 4;
     if(fim && secs.length && secs[secs.length - 1].getBoundingClientRect().top < innerHeight) atual = secs[secs.length - 1].id;
     marcar(atual || 'sec-passos');
   }
-  var scT; window.addEventListener('scroll', function(){ clearTimeout(scT); scT = setTimeout(secAtual, 60); }, {passive:true});
+  var scT; window.addEventListener('scroll', function(){
+    clearTimeout(scT);
+    // enquanto a rolagem do atalho acontece, o destaque fica parado; libera quando a rolagem termina
+    if(travado){ clearTimeout(travaT); travaT = setTimeout(function(){ travado = false; }, 150); return; }
+    scT = setTimeout(secAtual, 60);
+  }, {passive:true});
   marcar('sec-passos');
 
   /* intro */
@@ -591,14 +613,7 @@ body.hidden-mode #disfarce{display:block}
       ed.onclick = function(){ abrirForm(i); };
       var ex = document.createElement('button'); ex.className = 'linkbtn danger'; ex.textContent = 'Excluir';
       ex.setAttribute('aria-label', 'Excluir ' + x.nome);
-      var exT;
-      ex.onclick = function(){
-        if(!ex.dataset.confirm){ ex.dataset.confirm = '1'; ex.textContent = 'Confirmar'; exT = setTimeout(function(){ delete ex.dataset.confirm; ex.textContent = 'Excluir'; }, 4000); return; }
-        clearTimeout(exT);
-        var nl = contatos(); nl.splice(i, 1); store.set('contatos', nl);
-        if(editando === i) editando = null; else if(editando > i) editando--;
-        renderContato(); drawCard(); toast('Contato excluído.');
-      };
+      ex.onclick = function(){ pedirExclusao(i); };
       acts.append(ed, ex); row.append(info, acts);
       if(editando === i) row.hidden = true;
       box.appendChild(row);
@@ -623,6 +638,24 @@ body.hidden-mode #disfarce{display:block}
       out.appendChild(bt);
     });
   }
+  var excluirIdx = null, dlgEx = $('confirmaExcluir');
+  function fecharDlg(d){ if(d.close) d.close(); else d.removeAttribute('open'); }
+  function pedirExclusao(i){
+    var x = contatos()[i]; if(!x) return;
+    excluirIdx = i;
+    $('excluirTxt').textContent = x.nome + ' (' + x.tel + ') vai sair dos seus contatos de confiança e do cartão de emergência.';
+    if(dlgEx.showModal) dlgEx.showModal(); else dlgEx.setAttribute('open', '');
+    $('excluirNao').focus();
+  }
+  $('excluirNao').onclick = function(){ excluirIdx = null; fecharDlg(dlgEx); };
+  dlgEx.addEventListener('click', function(e){ if(e.target === dlgEx){ excluirIdx = null; fecharDlg(dlgEx); } });
+  $('excluirSim').onclick = function(){
+    var i = excluirIdx; excluirIdx = null; fecharDlg(dlgEx);
+    if(i === null) return;
+    var nl = contatos(); nl.splice(i, 1); store.set('contatos', nl);
+    if(editando === i) editando = null; else if(editando > i) editando--;
+    renderContato(); drawCard(); toast('Contato excluído.');
+  };
   $('salvarContato').onclick = function(){
     var nome = $('c-nome').value.trim(), tel = $('c-tel').value.trim(), m = $('contatoMsg');
     if(!nome) return say(m, 'Escreva o nome do contato.', true);
