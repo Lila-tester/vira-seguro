@@ -109,13 +109,13 @@ label.f small{font-weight:500;color:var(--ink-2)}
 #storyHint{margin:8px 2px 0}
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .helpbtn{flex:none;width:44px;height:44px;margin-top:6px;border-radius:50%;border:none;background:var(--soft);color:var(--ink);font:inherit;font-weight:800;font-size:21px;cursor:pointer}
-dialog.help{width:min(520px,calc(100% - 24px));max-height:calc(100% - 48px);margin:auto;border:none;border-radius:22px;padding:20px;background:var(--bg);color:var(--ink);overflow:auto}
+dialog.help{width:min(520px,calc(100% - 24px));max-height:calc(100% - 48px);margin:auto;border:none;border-radius:22px;padding:20px;background:var(--soft);color:var(--ink);overflow:auto}
 dialog.help::backdrop{background:rgba(0,0,0,.55)}
 .help-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .help-sec{margin:24px 0 4px}
 .help ol{margin:6px 0 12px;padding-left:22px}
 .help li{margin:6px 0}
-.help .intro-row .ib{background:var(--soft)}
+.help .intro-row .ib{background:var(--bg)}
 .linkbtn{background:none;border:none;color:var(--ink);font:inherit;font-weight:700;text-decoration:underline;min-height:48px;cursor:pointer;padding:0 6px}
 
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg);border-radius:14px;padding:4px;margin:4px 0 10px}
@@ -193,7 +193,7 @@ details.acc summary small{display:block;font-weight:500;color:var(--ink-2);font-
 .secnav a[aria-current="true"]{background:var(--primary);color:var(--on-primary)}
 [data-sec]{scroll-margin-top:72px}
 h1[tabindex="-1"]:focus{outline:none}
-dialog.confirm{width:min(420px,calc(100% - 32px));background:var(--soft)}
+dialog.confirm{width:min(420px,calc(100% - 32px))}
 dialog.confirm p{margin:8px 0 0;color:var(--ink-2)}
 .btn-danger{background:var(--sos);color:var(--on-sos)}
 .toast{position:fixed;left:50%;transform:translateX(-50%) translateY(10px);bottom:calc(92px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);font-weight:700;font-size:16px;padding:12px 18px;border-radius:14px;z-index:30;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:90vw;text-align:center}
@@ -370,6 +370,9 @@ body.hidden-mode #disfarce{display:block}
   <button class="btn btn-soft" id="shareStory"><svg class="i"><use href="#story"/></svg>Postar nos stories</button>
   <p class="small" id="storyHint">Escolha Instagram (Stories) ou WhatsApp (Meu status). O link do kit fica copiado: no Instagram, cole no adesivo de link.</p>
   <p class="msg" id="shareMsg" aria-live="polite"></p>
+  <p class="h-sec">Ajude a melhorar</p>
+  <p class="sub">O Vira Seguro ainda está no começo. Sentiu falta de algo ou encontrou um problema?</p>
+  <a class="ext" href="https://forms.gle/cYLCyHukokptQMRi7" target="_blank" rel="noopener"><span class="txt"><b>Mandar sugestão</b><small>Formulário rápido, sem precisar se identificar</small></span><svg class="i"><use href="#share"/></svg></a>
   <p class="foot">Conferido em outubro de 2026, com foco em São Paulo. O kit orienta, mas não substitui emergência nem advogado.</p>
 </section>
 
@@ -491,7 +494,10 @@ body.hidden-mode #disfarce{display:block}
     </ol>
     <p class="small">Abra uma vez com internet. Depois ele funciona offline.</p>
   </div>
-  <button class="btn btn-soft" id="fecharAjuda2">Entendi</button>
+  <h2 class="help-sec">Ajude a melhorar</h2>
+  <p class="sub">O kit ainda está no começo. Conte o que faltou ou o que não funcionou.</p>
+  <a class="btn btn-white" href="https://forms.gle/cYLCyHukokptQMRi7" target="_blank" rel="noopener">Mandar sugestão</a>
+  <button class="btn btn-primary" id="fecharAjuda2" style="margin-top:8px">Entendi</button>
 </dialog>
 <dialog class="help confirm" id="confirmaExcluir" aria-labelledby="h-excluir">
   <h2 id="h-excluir">Excluir contato?</h2>
