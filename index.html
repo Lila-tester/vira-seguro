@@ -4,6 +4,31 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Vira Seguro</title>
+<meta name="description" content="O que fazer antes de sair, na hora do perigo e onde denunciar depois.">
+<meta name="theme-color" content="#121214">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Vira Seguro">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Vira Seguro">
+<meta property="og:url" content="https://vira-seguro.vercel.app/">
+<meta property="og:title" content="Vira Seguro: kit de segurança pra quem faz vira-voto">
+<meta property="og:description" content="O que fazer antes de sair, na hora do perigo e onde denunciar depois.">
+<meta property="og:image" content="https://vira-seguro.vercel.app/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Escudo branco sobre fundo escuro com o nome Vira Seguro">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Vira Seguro: kit de segurança pra quem faz vira-voto">
+<meta name="twitter:description" content="O que fazer antes de sair, na hora do perigo e onde denunciar depois.">
+<meta name="twitter:image" content="https://vira-seguro.vercel.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -405,7 +430,7 @@ body.hidden-mode #disfarce{display:block}
 
 <script>
 (function(){
-  var KIT_URL = 'https://claude.ai/artifact/W9XsnWf3N8XxqEFopnUBVt';
+  var KIT_URL = 'https://vira-seguro.vercel.app';
   var store = {
     get:function(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
     set:function(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
@@ -675,6 +700,9 @@ body.hidden-mode #disfarce{display:block}
   renderContato(); renderChecklist(); drawCard();
   go(contato() ? 'durante' : 'antes', false);
 })();
+</script>
+<script>
+if('serviceWorker' in navigator){ window.addEventListener('load', function(){ navigator.serviceWorker.register('/sw.js').catch(function(){}); }); }
 </script>
 </body>
 </html>
