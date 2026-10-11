@@ -99,6 +99,22 @@ label.f small{font-weight:500;color:var(--ink-2)}
 .saved{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border-radius:14px;padding:12px 14px}
 .saved b{display:block}
 .saved[hidden]{display:none}
+.clist{display:flex;flex-direction:column;gap:8px;margin:4px 0 10px}
+.clist:empty{display:none}
+.cacts{display:flex;flex:none}
+.linkbtn.danger{color:var(--sos)}
+.btn-row{display:flex;gap:8px;margin-top:16px}
+.btn-row .btn{flex:1}
+#addContato,#avisarOutros .btn{margin-top:8px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.helpbtn{flex:none;width:44px;height:44px;margin-top:6px;border-radius:50%;border:none;background:var(--soft);color:var(--ink);font:inherit;font-weight:800;font-size:21px;cursor:pointer}
+dialog.help{width:min(520px,calc(100% - 24px));max-height:calc(100% - 48px);margin:auto;border:none;border-radius:22px;padding:20px;background:var(--bg);color:var(--ink);overflow:auto}
+dialog.help::backdrop{background:rgba(0,0,0,.55)}
+.help-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.help-sec{margin:24px 0 4px}
+.help ol{margin:6px 0 12px;padding-left:22px}
+.help li{margin:6px 0}
+.help .intro-row .ib{background:var(--soft)}
 .linkbtn{background:none;border:none;color:var(--ink);font:inherit;font-weight:700;text-decoration:underline;min-height:48px;cursor:pointer;padding:0 6px}
 
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg);border-radius:14px;padding:4px;margin:4px 0 10px}
@@ -123,8 +139,8 @@ details.acc summary small{display:block;font-weight:500;color:var(--ink-2);font-
 .acc-body{padding:0 18px 18px}
 .acc-body ul,.acc-body ol{margin:0;padding-left:20px}
 .acc-body li{margin:8px 0}
-#instalarBtn{margin-bottom:14px}
-#instalarBtn[hidden],#instalar[hidden]{display:none}
+#instalarBtn{margin:12px 0}
+#instalarBtn[hidden],#addContato[hidden],#cancelarContato[hidden]{display:none}
 .ch{background:var(--bg);border-radius:14px;padding:14px;margin:10px 0}
 .ch b{display:block}
 .ch p{color:var(--ink-2);font-size:15px;margin:2px 0 4px}
@@ -212,33 +228,38 @@ body.hidden-mode #disfarce{display:block}
 
 <!-- ANTES -->
 <section class="tab" data-tab="antes" aria-labelledby="h-antes">
-  <h1 id="h-antes">Prepare-se antes de sair</h1>
+  <div class="top">
+    <h1 id="h-antes">Prepare-se antes de sair</h1>
+    <button class="helpbtn" id="ajudaBtn" aria-label="Como o kit funciona e como instalar" aria-haspopup="dialog">?</button>
+  </div>
   <p class="sub">Quatro passos. Faça uma vez e revise antes de cada saída.</p>
 
   <div class="callout" id="intro" hidden>
     <b>O Vira Seguro funciona em três momentos, nas abas lá embaixo:</b>
-    <div class="intro-row"><span class="ib"><svg class="i"><use href="#list"/></svg></span><span><b>Antes</b>: cadastre um contato e se prepare para sair.</span></div>
+    <div class="intro-row"><span class="ib"><svg class="i"><use href="#list"/></svg></span><span><b>Antes</b>: cadastre até 3 contatos e se prepare para sair.</span></div>
     <div class="intro-row"><span class="ib sos"><svg class="i"><use href="#alert"/></svg></span><span><b>Durante</b>: em perigo, ligue para o 190 ou avise seu contato com um toque.</span></div>
     <div class="intro-row"><span class="ib"><svg class="i"><use href="#doc"/></svg></span><span><b>Depois</b>: escreva o que aconteceu e veja para onde enviar.</span></div>
-    <p class="small">Tudo fica só no seu celular.</p>
+    <p class="small">Tudo fica só no seu celular. Para rever isto e ver como instalar o kit, toque no <b>?</b> lá em cima.</p>
     <button class="btn btn-primary" id="fecharIntro">Começar</button>
   </div>
 
   <div class="step">
-    <div class="step-head"><span class="num" id="n1">1</span><h2>Contato de confiança</h2></div>
+    <div class="step-head"><span class="num" id="n1">1</span><h2>Contatos de confiança</h2></div>
+    <p>Até 3 pessoas que recebem sua localização se algo acontecer.</p>
+    <div class="clist" id="clist"></div>
     <div id="contatoForm">
-      <p>Quem recebe sua localização se algo acontecer.</p>
       <label class="f" for="c-nome">Nome</label>
       <input class="input" id="c-nome" type="text" autocomplete="off" placeholder="Nome do contato">
       <label class="f" for="c-tel">WhatsApp com DDD</label>
       <input class="input" id="c-tel" type="tel" inputmode="tel" autocomplete="off" placeholder="Número do contato com DDD">
-      <button class="btn btn-primary" id="salvarContato">Salvar contato</button>
+      <div class="btn-row">
+        <button class="btn btn-white" id="cancelarContato" hidden>Cancelar</button>
+        <button class="btn btn-primary" id="salvarContato">Salvar contato</button>
+      </div>
     </div>
-    <div class="saved" id="contatoSalvo" hidden>
-      <span><b id="contatoNome"></b><span class="small" id="contatoTel"></span></span>
-      <button class="linkbtn" id="trocarContato">Trocar</button>
-    </div>
+    <button class="btn btn-white" id="addContato" hidden>+ Adicionar contato</button>
     <p class="msg" id="contatoMsg" aria-live="polite"></p>
+    <p class="small" id="cHint" hidden>O primeiro da lista recebe pelo botão principal da aba Durante e pelo disfarce.</p>
   </div>
 
   <div class="step">
@@ -275,24 +296,6 @@ body.hidden-mode #disfarce{display:block}
     <img class="cardimg" id="cardImg" alt="Cartão com os telefones 190, 180, 100 e seu contato de confiança">
     <button class="btn btn-primary" id="salvarCartao"><svg class="i"><use href="#share"/></svg>Salvar imagem</button>
     <p class="msg" id="cartaoMsg" aria-live="polite"></p>
-  </div>
-
-  <div id="instalar">
-  <p class="h-sec">Tenha o kit à mão</p>
-  <p class="sub">Coloque o Vira Seguro na tela de início. Ele abre com um toque, mesmo sem internet.</p>
-  <details class="acc"><summary>Como instalar no celular</summary><div class="acc-body">
-    <button class="btn btn-primary" id="instalarBtn" hidden>Instalar o Vira Seguro</button>
-    <b>iPhone</b><ol>
-      <li>Abra este site no Safari ou no Chrome.</li>
-      <li>Toque no botão de compartilhar (o quadrado com a seta para cima).</li>
-      <li>Toque em "Adicionar à Tela de Início" e depois em "Adicionar".</li>
-    </ol><b>Android</b><ol>
-      <li>Abra este site no Chrome.</li>
-      <li>Toque nos três pontinhos, no canto de cima.</li>
-      <li>Toque em "Instalar app" ou "Adicionar à tela inicial".</li>
-    </ol>
-    <p class="small">Abra uma vez com internet. Depois ele funciona offline.</p>
-  </div></details>
   </div>
 
   <p class="h-sec">Guias de segurança</p>
@@ -335,6 +338,7 @@ body.hidden-mode #disfarce{display:block}
     </ul>
     <button class="btn btn-white" data-share-guide="Nas redes">Mandar este guia pro grupo</button>
   </div></details>
+  <a class="ext" href="https://comitedetecnologia.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Mais ferramentas</b><small>Comitê de Tecnologia: 80 ferramentas digitais para mobilização e trabalho de base</small></span><svg class="i"><use href="#share"/></svg></a>
 
   <p class="h-sec">Para o vira-voto</p>
   <p class="sub">Ferramentas que já existem para preparar a conversa.</p>
@@ -351,6 +355,7 @@ body.hidden-mode #disfarce{display:block}
   <p class="sub">Saia do local e vá para onde tem gente.</p>
   <a class="btn btn-sos btn-xl" href="tel:190"><svg class="i"><use href="#phone"/></svg>Ligar 190</a>
   <button class="btn btn-primary btn-xl" id="avisar"><svg class="i"><use href="#pin"/></svg><span class="ell" id="avisarTxt">Enviar minha localização</span></button>
+  <div id="avisarOutros"></div>
   <p class="msg" id="avisarMsg" aria-live="polite"></p>
 
   <p class="label">Para encerrar a conversa</p>
@@ -440,6 +445,30 @@ body.hidden-mode #disfarce{display:block}
   <button class="btn btn-soft" id="voltarKit">Voltar</button>
 </div>
 
+<dialog class="help" id="ajuda" aria-labelledby="h-ajuda">
+  <div class="help-head"><h2 id="h-ajuda">Como o kit funciona</h2><button class="linkbtn" id="fecharAjuda">Fechar</button></div>
+  <div class="intro-row"><span class="ib"><svg class="i"><use href="#list"/></svg></span><span><b>Antes</b>: cadastre até 3 contatos e se prepare para sair.</span></div>
+  <div class="intro-row"><span class="ib sos"><svg class="i"><use href="#alert"/></svg></span><span><b>Durante</b>: em perigo, ligue para o 190 ou avise seu contato com um toque.</span></div>
+  <div class="intro-row"><span class="ib"><svg class="i"><use href="#doc"/></svg></span><span><b>Depois</b>: escreva o que aconteceu e veja para onde enviar.</span></div>
+  <p class="small">Tudo fica só no seu celular.</p>
+  <h2 class="help-sec">Instale na tela de início</h2>
+  <p class="sub">O kit abre com um toque, mesmo sem internet.</p>
+  <p class="msg" id="jaInstalado" hidden>O kit já está instalado neste celular.</p>
+  <div id="instalarPassos">
+    <button class="btn btn-primary" id="instalarBtn" hidden>Instalar o Vira Seguro</button>
+    <b>iPhone</b><ol>
+      <li>Abra este site no Safari ou no Chrome.</li>
+      <li>Toque no botão de compartilhar (o quadrado com a seta para cima).</li>
+      <li>Toque em "Adicionar à Tela de Início" e depois em "Adicionar".</li>
+    </ol><b>Android</b><ol>
+      <li>Abra este site no Chrome.</li>
+      <li>Toque nos três pontinhos, no canto de cima.</li>
+      <li>Toque em "Instalar app" ou "Adicionar à tela inicial".</li>
+    </ol>
+    <p class="small">Abra uma vez com internet. Depois ele funciona offline.</p>
+  </div>
+  <button class="btn btn-soft" id="fecharAjuda2">Entendi</button>
+</dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <nav class="tabbar" aria-label="Momentos">
   <div class="tabbar-in">
@@ -464,7 +493,12 @@ body.hidden-mode #disfarce{display:block}
     try{ if(navigator.share){ await navigator.share({text:text}); return; } wa('', text); }
     catch(e){ if(!e || e.name !== 'AbortError') wa('', text); }
   }
-  function contato(){ return store.get('contato'); }
+  function contatos(){
+    var l = store.get('contatos');
+    if(!Array.isArray(l)){ var c = store.get('contato'); l = c ? [c] : []; store.set('contatos', l); store.del('contato'); }
+    return l;
+  }
+  function contato(){ return contatos()[0] || null; }
   var tt;
   function toast(t, err){ var el = $('toast'); el.textContent = t; el.className = 'toast on ' + (err ? 'err' : 'ok'); clearTimeout(tt); tt = setTimeout(function(){ el.className = 'toast'; }, 2600); }
   function flash(btn, label){ var orig = btn.innerHTML; btn.classList.add('success'); btn.textContent = label; setTimeout(function(){ btn.classList.remove('success'); btn.innerHTML = orig; }, 1800); }
@@ -485,27 +519,73 @@ body.hidden-mode #disfarce{display:block}
 
   /* contato */
   function digits(t){ var d = (t||'').replace(/\D/g,''); if(d.length === 10 || d.length === 11) d = '55' + d; return d; }
+  var editando = null, MAXC = 3;
+  function abrirForm(i){
+    var l = contatos(), c = i >= 0 ? l[i] : null;
+    editando = i; $('c-nome').value = c ? c.nome : ''; $('c-tel').value = c ? c.tel : '';
+    say($('contatoMsg'), ''); renderContato(); $('c-nome').focus();
+  }
   function renderContato(){
-    var c = contato();
-    $('contatoForm').hidden = !!c; $('contatoSalvo').hidden = !c;
+    var l = contatos(), c = l[0] || null, box = $('clist');
+    if(editando === null && !l.length) editando = -1;
+    box.innerHTML = '';
+    l.forEach(function(x, i){
+      var row = document.createElement('div'); row.className = 'saved';
+      var info = document.createElement('span');
+      var b = document.createElement('b'); b.textContent = x.nome;
+      var t = document.createElement('span'); t.className = 'small'; t.textContent = ' · ' + x.tel;
+      info.append(b, t);
+      var acts = document.createElement('span'); acts.className = 'cacts';
+      var ed = document.createElement('button'); ed.className = 'linkbtn'; ed.textContent = 'Editar';
+      ed.setAttribute('aria-label', 'Editar ' + x.nome);
+      ed.onclick = function(){ abrirForm(i); };
+      var ex = document.createElement('button'); ex.className = 'linkbtn danger'; ex.textContent = 'Excluir';
+      ex.setAttribute('aria-label', 'Excluir ' + x.nome);
+      var exT;
+      ex.onclick = function(){
+        if(!ex.dataset.confirm){ ex.dataset.confirm = '1'; ex.textContent = 'Confirmar'; exT = setTimeout(function(){ delete ex.dataset.confirm; ex.textContent = 'Excluir'; }, 4000); return; }
+        clearTimeout(exT);
+        var nl = contatos(); nl.splice(i, 1); store.set('contatos', nl);
+        if(editando === i) editando = null; else if(editando > i) editando--;
+        renderContato(); drawCard(); toast('Contato excluído.');
+      };
+      acts.append(ed, ex); row.append(info, acts);
+      if(editando === i) row.hidden = true;
+      box.appendChild(row);
+    });
+    $('contatoForm').hidden = editando === null;
+    $('cancelarContato').hidden = !l.length;
+    $('salvarContato').textContent = editando >= 0 ? 'Salvar alterações' : 'Salvar contato';
+    $('addContato').hidden = editando !== null || l.length >= MAXC;
+    $('addContato').textContent = l.length ? '+ Adicionar outro contato' : '+ Adicionar contato';
+    $('cHint').hidden = l.length < 2;
     $('n1').classList.toggle('done', !!c); $('n1').textContent = c ? '✓' : '1';
-    if(c){ $('contatoNome').textContent = c.nome; $('contatoTel').textContent = ' · ' + c.tel; }
     $('avisarTxt').textContent = c ? 'Avisar ' + c.nome : 'Enviar minha localização';
     $('abrirConversaTxt').textContent = c ? 'Abrir conversa com ' + c.nome : 'Abrir o WhatsApp';
     $('abrirConversa').href = 'https://wa.me/' + (c ? c.wa : '');
     $('mtagMsg').textContent = c ? 'avisa ' + c.nome : 'avisa seu contato';
+    var out = $('avisarOutros'); out.innerHTML = '';
+    l.slice(1).forEach(function(x){
+      var bt = document.createElement('button'); bt.className = 'btn btn-soft';
+      var ic = document.createElement('span'); ic.innerHTML = '<svg class="i"><use href="#pin"/></svg>';
+      var tx = document.createElement('span'); tx.className = 'ell'; tx.textContent = 'Avisar ' + x.nome;
+      bt.append(ic.firstChild, tx); bt.onclick = function(){ avisar(x); };
+      out.appendChild(bt);
+    });
   }
   $('salvarContato').onclick = function(){
     var nome = $('c-nome').value.trim(), tel = $('c-tel').value.trim(), m = $('contatoMsg');
     if(!nome) return say(m, 'Escreva o nome do contato.', true);
     var d = digits(tel);
     if(d.length < 12 || d.length > 13) return say(m, 'Confira o número: DDD e número, como 11 91234-5678.', true);
-    store.set('contato', {nome:nome, tel:tel, wa:d}); renderContato(); drawCard(); say(m, ''); toast('Contato salvo.');
+    var l = contatos(), novo = {nome:nome, tel:tel, wa:d};
+    if(editando >= 0 && editando < l.length) l[editando] = novo;
+    else { if(l.length >= MAXC) return say(m, 'Você já tem ' + MAXC + ' contatos.', true); l.push(novo); }
+    var ed = editando >= 0;
+    store.set('contatos', l); editando = null; renderContato(); drawCard(); say(m, ''); toast(ed ? 'Contato atualizado.' : 'Contato salvo.');
   };
-  $('trocarContato').onclick = function(){
-    var c = contato(); $('c-nome').value = c ? c.nome : ''; $('c-tel').value = c ? c.tel : '';
-    store.del('contato'); renderContato(); say($('contatoMsg'), ''); $('c-nome').focus();
-  };
+  $('cancelarContato').onclick = function(){ editando = null; say($('contatoMsg'), ''); renderContato(); };
+  $('addContato').onclick = function(){ abrirForm(-1); };
 
   /* checklist */
   var lists = {
@@ -566,10 +646,12 @@ body.hidden-mode #disfarce{display:block}
         x.fillStyle = '#FFFFFF'; x.font = '800 96px ' + F; x.fillText(r[0], 140, y + 122);
         x.font = '600 48px ' + F; x.fillText(r[1], 390, y + 108); y += 210;
       });
-      var c = contato();
-      x.fillStyle = '#26262B'; rr(x,90,y,900,200,36); x.fill();
-      x.fillStyle = '#A6A6B2'; x.font = '600 40px ' + F; x.fillText('Contato de confiança', 140, y + 72);
-      x.fillStyle = '#FFFFFF'; x.font = '700 52px ' + F; x.fillText(c ? c.nome + '  ' + c.tel : '______________________', 140, y + 145);
+      var cs = contatos(), n = Math.max(cs.length, 1), lh = 68;
+      x.fillStyle = '#26262B'; rr(x,90,y,900,200 + (n - 1) * lh,36); x.fill();
+      x.fillStyle = '#A6A6B2'; x.font = '600 40px ' + F; x.fillText(cs.length > 1 ? 'Contatos de confiança' : 'Contato de confiança', 140, y + 72);
+      x.fillStyle = '#FFFFFF'; x.font = (cs.length > 1 ? '700 48px ' : '700 52px ') + F;
+      if(!cs.length) x.fillText('______________________', 140, y + 145);
+      cs.forEach(function(c, i){ x.fillText(c.nome + '  ' + c.tel, 140, y + 145 + i * lh, 800); });
       $('cardImg').src = cv.toDataURL('image/png'); cv.toBlob(function(b){ cardBlob = b; });
     }
     (document.fonts && document.fonts.load) ? document.fonts.load('800 84px Figtree').then(paint, paint) : paint();
@@ -584,14 +666,15 @@ body.hidden-mode #disfarce{display:block}
   };
 
   /* emergência */
-  $('avisar').onclick = function(){
-    var c = contato(), m = $('avisarMsg'), base = 'Preciso de ajuda. Estou fazendo campanha e me sinto em risco.';
+  $('avisar').onclick = function(){ avisar(contato()); };
+  function avisar(c){
+    var m = $('avisarMsg'), base = 'Preciso de ajuda. Estou fazendo campanha e me sinto em risco.';
     if(!navigator.geolocation) return wa(c && c.wa, base);
     say(m, 'Pegando sua localização…');
     navigator.geolocation.getCurrentPosition(function(p){
       say(m, ''); wa(c && c.wa, base + ' Estou aqui: https://maps.google.com/?q=' + p.coords.latitude.toFixed(5) + ',' + p.coords.longitude.toFixed(5));
     }, function(){ say(m, 'Sem localização. Abrindo o WhatsApp mesmo assim.'); wa(c && c.wa, base); }, {timeout:6000, maximumAge:60000});
-  };
+  }
   $('ocultar').onclick = function(){ document.body.classList.add('hidden-mode'); $('dzHint').hidden = !!store.get('dzSeen'); window.scrollTo(0,0); };
   $('dzOk').onclick = function(){ $('dzHint').hidden = true; store.set('dzSeen', true); };
   $('dAvisar').onclick = function(){ $('avisar').click(); };
@@ -718,10 +801,17 @@ body.hidden-mode #disfarce{display:block}
     toast('Relato apagado.');
   };
 
-  if((window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone) $('instalar').hidden = true;
+  /* ajuda */
+  var dlg = $('ajuda');
+  function fecharAjuda(){ if(dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
+  $('ajudaBtn').onclick = function(){ if(dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); };
+  $('fecharAjuda').onclick = fecharAjuda; $('fecharAjuda2').onclick = fecharAjuda;
+  dlg.addEventListener('click', function(e){ if(e.target === dlg) fecharAjuda(); });
+  function instalado(){ $('jaInstalado').hidden = false; $('instalarPassos').hidden = true; }
+  if((window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone) instalado();
   var installEvt = null;
   window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); installEvt = e; $('instalarBtn').hidden = false; });
-  window.addEventListener('appinstalled', function(){ $('instalar').hidden = true; });
+  window.addEventListener('appinstalled', instalado);
   $('instalarBtn').onclick = function(){ if(!installEvt) return; installEvt.prompt(); installEvt = null; $('instalarBtn').hidden = true; };
 
   renderContato(); renderChecklist(); drawCard();
