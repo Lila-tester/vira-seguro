@@ -187,6 +187,11 @@ details.acc summary small{display:block;font-weight:500;color:var(--ink-2);font-
 .ext small{display:block;color:var(--ink-2);font-size:15px}
 .ext .txt{flex:1}
 .h-sec{font-size:22px;font-weight:800;margin:34px 0 4px}
+.secnav{position:sticky;top:0;z-index:5;display:flex;gap:6px;overflow-x:auto;margin:12px -20px 4px;padding:10px 20px;background:var(--bg);scrollbar-width:none}
+.secnav::-webkit-scrollbar{display:none}
+.secnav a{flex:1 0 auto;display:flex;align-items:center;justify-content:center;min-height:40px;padding:0 10px;border-radius:999px;background:var(--soft);color:var(--ink);font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap}
+.secnav a[aria-current="true"]{background:var(--primary);color:var(--on-primary)}
+[data-sec]{scroll-margin-top:72px}
 .toast{position:fixed;left:50%;transform:translateX(-50%) translateY(10px);bottom:calc(92px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);font-weight:700;font-size:16px;padding:12px 18px;border-radius:14px;z-index:30;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok::before{content:"✓  "}
@@ -236,6 +241,12 @@ body.hidden-mode #disfarce{display:block}
     <button class="helpbtn" id="ajudaBtn" aria-label="Como o kit funciona e como instalar" aria-haspopup="dialog">?</button>
   </div>
   <p class="sub">Quatro passos. Faça uma vez e revise antes de cada saída.</p>
+  <nav class="secnav" id="secnav" aria-label="Partes desta página">
+    <a href="#sec-passos">Passos</a>
+    <a href="#sec-guias">Guias</a>
+    <a href="#sec-viravoto">Vira-voto</a>
+    <a href="#sec-espalhe">Espalhar</a>
+  </nav>
 
   <div class="callout" id="intro" hidden>
     <b>O Vira Seguro funciona em três momentos, nas abas lá embaixo:</b>
@@ -246,7 +257,7 @@ body.hidden-mode #disfarce{display:block}
     <button class="btn btn-primary" id="fecharIntro">Começar</button>
   </div>
 
-  <div class="step">
+  <div class="step" id="sec-passos" data-sec>
     <div class="step-head"><span class="num" id="n1">1</span><h2>Contatos de confiança</h2></div>
     <p>Até 3 pessoas que recebem sua localização se algo acontecer.</p>
     <div class="clist" id="clist"></div>
@@ -301,7 +312,7 @@ body.hidden-mode #disfarce{display:block}
     <p class="msg" id="cartaoMsg" aria-live="polite"></p>
   </div>
 
-  <p class="h-sec">Guias de segurança</p>
+  <p class="h-sec" id="sec-guias" data-sec>Guias de segurança</p>
   <p class="sub">O que fazer durante e depois, em cada situação.</p>
   <details class="acc" data-guide><summary>Na rua</summary><div class="acc-body">
     <b>Durante</b><ul>
@@ -342,13 +353,13 @@ body.hidden-mode #disfarce{display:block}
     <button class="btn btn-white" data-share-guide="Nas redes">Mandar este guia pro grupo</button>
   </div></details>
 
-  <p class="h-sec">Para o vira-voto</p>
+  <p class="h-sec" id="sec-viravoto" data-sec>Para o vira-voto</p>
   <p class="sub">Ferramentas que já existem para preparar a conversa.</p>
   <a class="ext" href="https://todoscomlula.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Como conversar</b><small>Todos com Lula: argumentos por perfil de eleitor e simulador</small></span><svg class="i"><use href="#share"/></svg></a>
   <a class="ext" href="https://dapravirar.vercel.app/numeros" target="_blank" rel="noopener"><span class="txt"><b>Onde estão os votos</b><small>Dá pra Virar: mapa da abstenção e resultado por cidade</small></span><svg class="i"><use href="#share"/></svg></a>
   <a class="ext" href="https://comitedetecnologia.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Mais ferramentas</b><small>Comitê de Tecnologia: 80 ferramentas digitais para mobilização e trabalho de base</small></span><svg class="i"><use href="#share"/></svg></a>
 
-  <p class="h-sec">Espalhe o kit</p>
+  <p class="h-sec" id="sec-espalhe" data-sec>Espalhe o kit</p>
   <p class="sub">Mande para quem faz campanha com você.</p>
   <button class="btn btn-soft" id="shareKit"><svg class="i"><use href="#share"/></svg>Mandar o kit pra alguém</button>
   <button class="btn btn-soft" id="shareDM"><svg class="i"><use href="#send"/></svg>Mandar no Direct do Instagram</button>
@@ -521,6 +532,36 @@ body.hidden-mode #disfarce{display:block}
     if(focus){ var h = document.querySelector('.tab.on h1'); h.setAttribute('tabindex','-1'); h.focus({preventScroll:true}); }
   }
   btns.forEach(function(b){ b.onclick = function(){ go(b.dataset.go, true); }; });
+
+  /* navegação da aba Antes */
+  var navLinks = document.querySelectorAll('#secnav a');
+  function marcar(id){
+    navLinks.forEach(function(a){
+      var on = a.getAttribute('href') === '#' + id;
+      if(on){
+        a.setAttribute('aria-current', 'true');
+        var nav = $('secnav'), l = a.offsetLeft - nav.offsetLeft, r = l + a.offsetWidth;
+        if(l < nav.scrollLeft || r > nav.scrollLeft + nav.clientWidth) nav.scrollLeft = l - 20;
+      } else a.removeAttribute('aria-current');
+    });
+  }
+  navLinks.forEach(function(a){
+    a.onclick = function(e){
+      e.preventDefault();
+      var alvo = document.querySelector(a.getAttribute('href'));
+      var suave = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+      alvo.scrollIntoView({behavior: suave ? 'smooth' : 'auto', block:'start'}); marcar(alvo.id);
+    };
+  });
+  function secAtual(){
+    var atual = null;
+    document.querySelectorAll('[data-sec]').forEach(function(el){ if(el.getBoundingClientRect().top <= 90) atual = el.id; });
+    var secs = document.querySelectorAll('[data-sec]'), fim = innerHeight + scrollY >= document.documentElement.scrollHeight - 4;
+    if(fim && secs.length && secs[secs.length - 1].getBoundingClientRect().top < innerHeight) atual = secs[secs.length - 1].id;
+    marcar(atual || 'sec-passos');
+  }
+  var scT; window.addEventListener('scroll', function(){ clearTimeout(scT); scT = setTimeout(secAtual, 60); }, {passive:true});
+  marcar('sec-passos');
 
   /* intro */
   if(!store.get('onboarded')) $('intro').hidden = false;
