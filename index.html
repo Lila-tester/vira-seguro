@@ -187,6 +187,13 @@ details.acc summary small{display:block;font-weight:500;color:var(--ink-2);font-
 .ext b{display:block;font-size:17px}
 .ext small{display:block;color:var(--ink-2);font-size:15px}
 .ext .txt{flex:1}
+.links{background:var(--soft);border-radius:18px;margin:10px 0;overflow:hidden}
+.links a{display:flex;align-items:center;gap:12px;min-height:64px;padding:12px 16px;color:var(--ink);text-decoration:none;border-top:1px solid var(--line)}
+.links a:first-child{border-top:none}
+.links b{display:block;font-size:16px}
+.links small{display:block;color:var(--ink-2);font-size:14px;line-height:1.35}
+.links .txt{flex:1}
+.links svg.i{width:20px;height:20px;color:var(--ink-2)}
 .h-sec{font-size:22px;font-weight:800;margin:34px 0 4px}
 .secnav{position:sticky;top:0;z-index:5;display:flex;gap:6px;overflow-x:auto;margin:12px -20px 4px;padding:10px 20px;background:var(--bg);scrollbar-width:none}
 .secnav::-webkit-scrollbar{display:none}
@@ -234,6 +241,7 @@ body.hidden-mode #disfarce{display:block}
   <symbol id="eye" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.6 9.6 0 0 1 12 6c5 0 9 6 9 6a15 15 0 0 1-2.4 3M6.3 7.6C4.2 9.2 3 12 3 12s4 6 9 6c1.6 0 3-.4 4.3-1.1"/></symbol>
   <symbol id="send" viewBox="0 0 24 24"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></symbol>
   <symbol id="story" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-dasharray="3 2.4"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="out" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></symbol>
   <symbol id="tick" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
 </svg>
 
@@ -360,9 +368,12 @@ body.hidden-mode #disfarce{display:block}
 
   <p class="h-sec" id="sec-viravoto" data-sec>Para o vira-voto</p>
   <p class="sub">Ferramentas que já existem para preparar a conversa.</p>
-  <a class="ext" href="https://todoscomlula.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Como conversar</b><small>Todos com Lula: argumentos por perfil de eleitor e simulador</small></span><svg class="i"><use href="#share"/></svg></a>
-  <a class="ext" href="https://dapravirar.vercel.app/numeros" target="_blank" rel="noopener"><span class="txt"><b>Onde estão os votos</b><small>Dá pra Virar: mapa da abstenção e resultado por cidade</small></span><svg class="i"><use href="#share"/></svg></a>
-  <a class="ext" href="https://comitedetecnologia.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Mais ferramentas</b><small>Comitê de Tecnologia: ferramentas digitais para mobilização e trabalho de base</small></span><svg class="i"><use href="#share"/></svg></a>
+  <div class="links">
+    <a href="https://todoscomlula.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Como conversar</b><small>Todos com Lula: argumentos por perfil de eleitor e simulador</small></span><svg class="i" aria-hidden="true"><use href="#out"/></svg></a>
+    <a href="https://www.ondedapraconversar.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Onde dá pra conversar</b><small>ondedapraconversar.com.br</small></span><svg class="i" aria-hidden="true"><use href="#out"/></svg></a>
+    <a href="https://dapravirar.vercel.app/numeros" target="_blank" rel="noopener"><span class="txt"><b>Onde estão os votos</b><small>Dá pra Virar: mapa da abstenção e resultado por cidade</small></span><svg class="i" aria-hidden="true"><use href="#out"/></svg></a>
+    <a href="https://comitedetecnologia.com.br/" target="_blank" rel="noopener"><span class="txt"><b>Mais ferramentas</b><small>Comitê de Tecnologia: ferramentas digitais para mobilização e trabalho de base</small></span><svg class="i" aria-hidden="true"><use href="#out"/></svg></a>
+  </div>
 
   <p class="h-sec" id="sec-espalhe" data-sec>Espalhe o kit</p>
   <p class="sub">Mande para quem faz campanha com você.</p>
