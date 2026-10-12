@@ -1,6 +1,6 @@
 # Ideias para depois
 
-## Reorganizar a navegação (aba Antes como painel)
+## ✅ Reorganizar a navegação (aba Antes como painel) — implementado
 
 **Problema:** a aba Antes ficou comprida (cinco passos, guias, ferramentas, compartilhar e sugestões numa rolagem só). Os atalhos no topo ajudam, mas são um remendo.
 
@@ -25,7 +25,7 @@
 
 **Como fazer:** implementar com calma, longe de um ato. Testar antes com algumas pessoas numa versão separada (preview da Vercel), sem mexer no endereço principal.
 
-## Ficha de segurança para enviar aos contatos
+## ✅ Ficha de segurança para enviar aos contatos — implementado (o combinado de horário entrou como campo da ficha)
 
 **Ideia:** ajudar a pessoa a montar uma ficha com informações importantes e mandar para quem confia (ou guardar nas próprias notas), **sem o kit salvar nada**. Mesmo princípio do relato na aba Depois: preenche, gera o texto, envia, e os campos são apagados.
 
